@@ -1,7 +1,9 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
+#include <vector>
 #include "IGameState.h"
+#include "MenuButton.h"
 
 class IStateBasedGame;
 
@@ -23,7 +25,8 @@ public:
 private:
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
-	sf::Clock m_clock;
+	
+	std::vector<MenuButton> buttons;
 };
 
 #endif

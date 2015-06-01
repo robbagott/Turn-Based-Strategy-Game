@@ -3,7 +3,6 @@
 #include <istream>
 #include <sstream>
 #include <iostream>
-#include <cassert>
 #include "stdAfx.h"
 
 using namespace std;
@@ -106,6 +105,7 @@ AppInfo::AppInfo(std::string configFilename)
 	}
 
 #ifdef DEBUG
+
 	std::cout << "width: "<< m_windowWidth 
 		<< ", height: " << m_windowHeight
 		<< ", screen mode: " << m_screenMode 

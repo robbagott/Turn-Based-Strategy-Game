@@ -1,15 +1,20 @@
 #include "MainMenu.h"
 #include "NullGameState.h"
-#include <cassert>
+#include <iostream>
 
 MainMenu::MainMenu() {
-	assert(m_texture.loadFromFile("../Assets/Graphics/MainMenu.bmp") == true);
+	if (!m_texture.loadFromFile("../Assets/Graphics/MainMenu.bmp")) {
+		std::cerr << "No Main Menu texture loaded." << std::endl;
+		exit(1);
+	}
 	m_sprite.setTexture(m_texture);
 }
 
 MainMenu::~MainMenu() {}
 
-void MainMenu::init() {}
+void MainMenu::init() {
+	std::cout << "Entering main menu state" << std::endl;
+}
 void MainMenu::cleanup() {}
 void MainMenu::pause() {}
 void MainMenu::resume() {}
@@ -18,7 +23,6 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 
 }
 void MainMenu::update(IStateBasedGame& game) {
-	static sf::Time startTime = m_clock.getElapsedTime();
 
 	sf::Event currentEvent;
 	while (game.mainWindow()->pollEvent(currentEvent)) {
@@ -29,11 +33,6 @@ void MainMenu::update(IStateBasedGame& game) {
 		else if (currentEvent.type == sf::Event::EventType::Closed) {
 			game.requestQuit();
 		}
-	}
-
-	if ((m_clock.getElapsedTime() - startTime).asSeconds() > 5) {
-		IGameState* newState = new NullGameState();
-		game.requestChangeState(*newState);
 	}
 }
 void MainMenu::draw(IStateBasedGame& game) {

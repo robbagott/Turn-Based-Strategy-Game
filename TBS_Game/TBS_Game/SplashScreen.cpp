@@ -1,15 +1,19 @@
 #include "SplashScreen.h"
 #include "MainMenu.h"
-#include <cassert>
+#include <iostream>
 
 SplashScreen::SplashScreen(std::string filename) {
-	assert(m_texture.loadFromFile(filename) == true);
+	if (!m_texture.loadFromFile(filename)) {
+		std::cerr << "No splash screen texture loaded." << std::endl;
+		exit(1);
+	}
 	m_sprite.setTexture(m_texture);
 }
 
 SplashScreen::~SplashScreen() {}
 
 void SplashScreen::init() {
+	std::cout << "Entering splash screen state" << std::endl;
 	return;
 }
 void SplashScreen::cleanup() {

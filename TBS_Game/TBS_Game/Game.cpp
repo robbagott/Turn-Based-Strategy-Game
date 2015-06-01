@@ -2,12 +2,16 @@
 #include "SplashScreen.h"
 #include "MainMenu.h"
 #include "NullGameState.h"
+#include <iostream>
 
 bool Game::m_isInstantiated = false;
 
 Game::Game() {
 	//There can only be one
-	assert(!Game::m_isInstantiated);
+	if (Game::m_isInstantiated) {
+		std::cerr << "Attempted to instatiate a second instance of Game." << std::endl;
+		exit(1);
+	}
 	Game::m_isInstantiated = true;
 	Game::m_quitRequested = false;
 	Game::m_changeStateRequested = false;
@@ -41,7 +45,6 @@ void Game::init() {
 	}
 }
 
-//Outside code calls this
 void Game::start() {
 
 	init();
@@ -134,7 +137,9 @@ void Game::requestChangeState(IGameState& newState) {
 }
 
 void Game::swapState() {
-	assert(m_changeStateRequested);
+	if (!m_changeStateRequested) {
+		exit(1);
+	}
 
 	m_gameState->cleanup();
 	delete m_gameState;
