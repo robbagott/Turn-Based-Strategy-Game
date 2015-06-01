@@ -67,32 +67,51 @@ void Game::initializeWindow() {
 	if (m_appInfo->screenMode() == AppInfo::SM_FULLSCREEN) {
 		//Create window
 		m_mainWindow = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "TBS_Game", sf::Style::Fullscreen);
-		
-		//Figure out maximum scaling.
-		int fullWidth = sf::VideoMode::getDesktopMode().width;
-		int fullHeight = sf::VideoMode::getDesktopMode().height;
-		int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
-		int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2*maxScaling);
-		int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2*maxScaling);
-		m_mainWindow->setView(sf::View(sf::FloatRect(-xOffset, -yOffset, m_appInfo->resx() + 2*xOffset, m_appInfo->resy() + 2*yOffset)));
+
+		//Handle stretching/scaline
+		if (m_appInfo->stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		}
+		else {
+			int fullWidth = sf::VideoMode::getDesktopMode().width;
+			int fullHeight = sf::VideoMode::getDesktopMode().height;
+			int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
+			int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+		}
 	}
 	else if (m_appInfo->screenMode() == AppInfo::SM_BORDERLESSWINDOW) {
+		//Create window
 		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo->windowWidth(), m_appInfo->windowHeight()), "TBS_Game", sf::Style::None);
 
-		int fullWidth = sf::VideoMode::getDesktopMode().width;
-		int fullHeight = sf::VideoMode::getDesktopMode().height;
-		int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
-		int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
-		int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
-		m_mainWindow->setView(sf::View(sf::FloatRect(-xOffset, -yOffset, m_appInfo->resx() + 2*xOffset, m_appInfo->resy() + 2*yOffset)));
+		//Handle stretching/scaling
+		if (m_appInfo->stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		}
+		else {
+			int fullWidth = sf::VideoMode::getDesktopMode().width;
+			int fullHeight = sf::VideoMode::getDesktopMode().height;
+			int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
+			int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+		}
 	}
 	else {
+		//Create Window
 		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo->windowWidth(), m_appInfo->windowHeight()), "TBS_Game");
 
-		int maxScaling = std::min(m_appInfo->windowWidth() / m_appInfo->resx(), m_appInfo->windowHeight() / m_appInfo->resy());
-		int xOffset = (m_appInfo->windowWidth() - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
-		int yOffset = (m_appInfo->windowHeight() - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
-		m_mainWindow->setView(sf::View(sf::FloatRect(-xOffset, -yOffset, m_appInfo->resx() + 2*xOffset, m_appInfo->resy() + 2*yOffset)));
+		//Handle stretching/scaling
+		if (m_appInfo->stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		}
+		else {
+			int maxScaling = std::min(m_appInfo->windowWidth() / m_appInfo->resx(), m_appInfo->windowHeight() / m_appInfo->resy());
+			int xOffset = (m_appInfo->windowWidth() - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (m_appInfo->windowHeight() - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+		}
 	}
 }
 
@@ -104,7 +123,7 @@ void Game::cleanup() {
 
 }
 
-sf::RenderWindow* Game::mainWindow() {
+sf::RenderWindow* Game::mainWindow() const {
 	return m_mainWindow;
 }
 
@@ -120,6 +139,7 @@ void Game::swapState() {
 	m_gameState->cleanup();
 	delete m_gameState;
 	m_gameState = m_nextGameState;
+
 	//Reset nextGameState to NullGameState. 
 	//We don't want to accidentally deallocate the current gameState by deallocating nextGameState
 	m_nextGameState = new NullGameState();

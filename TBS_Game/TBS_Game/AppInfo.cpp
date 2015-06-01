@@ -113,30 +113,30 @@ AppInfo::AppInfo(std::string configFilename)
 #endif
 }
 
-int AppInfo::windowWidth() {
+int AppInfo::windowWidth() const {
 	return m_windowWidth;
 }
 
-int AppInfo::windowHeight() {
+int AppInfo::windowHeight() const {
 	return m_windowHeight;
 }
 
-AppInfo::ScreenMode AppInfo::screenMode() {
+AppInfo::ScreenMode AppInfo::screenMode() const	{
 	return m_screenMode;
 }
 
-bool AppInfo::splashEnabled() {
+bool AppInfo::splashEnabled() const {
 	return m_splashEnabled;
 }
 
-int AppInfo::resx() {
+int AppInfo::resx() const {
 	return m_resx;
 }
 
-int AppInfo::resy() {
+int AppInfo::resy() const {
 	return m_resy;
 }
 
-bool AppInfo::stretchToFitEnabled() {
+bool AppInfo::stretchToFitEnabled() const {
 	return m_stretchToFit;
 }

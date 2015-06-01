@@ -20,7 +20,7 @@ public:
 	void start();
 	void requestChangeState(IGameState& gameState);
 	void requestQuit();
-	sf::RenderWindow* mainWindow();
+	sf::RenderWindow* mainWindow() const;
 
 private:
 	void init();

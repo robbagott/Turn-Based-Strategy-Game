@@ -11,13 +11,13 @@ public:
 
 	enum ScreenMode { SM_FULLSCREEN, SM_BORDERLESSWINDOW, SM_WINDOW };
 
-	int windowWidth();
-	int windowHeight();
-	int resx();
-	int resy();
-	ScreenMode screenMode();
-	bool splashEnabled();
-	bool stretchToFitEnabled();
+	int windowWidth() const;
+	int windowHeight() const;
+	int resx() const;
+	int resy() const;
+	ScreenMode screenMode() const;
+	bool splashEnabled() const;
+	bool stretchToFitEnabled() const;
 
 private:
 
