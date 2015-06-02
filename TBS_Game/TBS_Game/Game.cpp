@@ -10,6 +10,8 @@ Game::Game() {
 	//There can only be one
 	if (Game::m_isInstantiated) {
 		std::cerr << "Attempted to instatiate a second instance of Game." << std::endl;
+		char x;
+		std::cin >> x;
 		exit(1);
 	}
 	Game::m_isInstantiated = true;

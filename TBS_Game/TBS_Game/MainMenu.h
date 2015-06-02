@@ -23,10 +23,11 @@ public:
 	void draw(IStateBasedGame& game);
 
 private:
-	sf::Sprite m_sprite;
+	sf::Sprite m_background;
 	sf::Texture m_texture;
-	
-	std::vector<MenuButton> buttons;
+	sf::Music music;
+	int m_selectedButton;
+	std::vector<MenuButton*> buttons;
 };
 
 #endif

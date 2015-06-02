@@ -5,6 +5,8 @@
 SplashScreen::SplashScreen(std::string filename) {
 	if (!m_texture.loadFromFile(filename)) {
 		std::cerr << "No splash screen texture loaded." << std::endl;
+		char x;
+		std::cin >> x;
 		exit(1);
 	}
 	m_sprite.setTexture(m_texture);
@@ -33,14 +35,16 @@ void SplashScreen::handleEvents(IStateBasedGame& game) {
 
 	sf::Event currentEvent;
 	while (game.mainWindow()->pollEvent(currentEvent)) {
-		if (currentEvent.type == sf::Event::EventType::KeyPressed ||
-			currentEvent.type == sf::Event::EventType::Closed) {
+		if (currentEvent.type == sf::Event::EventType::KeyPressed) {
 			IGameState* newState = new MainMenu();
 			game.requestChangeState(*newState);
 		}
+		if (currentEvent.type == sf::Event::EventType::Closed) {
+			game.requestQuit();
+		}
 	}
 
-	if ((m_clock.getElapsedTime() - startTime).asSeconds() > 5) {
+	if ((m_clock.getElapsedTime() - startTime).asSeconds() > 3) {
 		IGameState* newState = new MainMenu();
 		game.requestChangeState(*newState);
 	}

@@ -1,31 +1,66 @@
 #include "MenuButton.h"
 #include <iostream>
 
-MenuButton::MenuButton(std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width) {
+MenuButton::MenuButton(std::string name, std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width) {
+	m_name = name;
+
 	if (!m_selectedTexture.loadFromFile(selectedFilename)) {
 		std::cout << "Could not load MenuButton with image: " << selectedFilename << std::endl;
+		char x;
+		std::cin >> x;
+		exit(1);
 	}
-	if (!m_selectedTexture.loadFromFile(unselectedFilename)) {
+	if (!m_unselectedTexture.loadFromFile(unselectedFilename)) {
 		std::cout << "Could not load MenuButton with image: " << unselectedFilename << std::endl;
+		char x;
+		std::cin >> x;
+		exit(1);
 	}
-	m_sprite.setTexture(m_selectedTexture);
+	m_sprite.setTexture(m_unselectedTexture);
+	m_sprite.setPosition(left, top);
+
+	m_isSelected = false;
+
+	if (!m_selectSound.loadFromFile("../Assets/Sounds/menu_button.wav")) {
+		std::cout << "Could not load MenuButton with sound: " << "../Assets/Sounds/menu_button.wav" << std::endl;
+		char x;
+		std::cin >> x;
+		exit(1);
+	}
+	m_sound.setBuffer(m_selectSound);
 }
 
-int MenuButton::left() const {
-	return m_left;
+const sf::Vector2f& MenuButton::position() const {
+	return m_sprite.getPosition();
 }
-int MenuButton::top() const {
-	return m_top;
+
+sf::FloatRect MenuButton::bounds() const {
+	return m_sprite.getLocalBounds();
 }
-int MenuButton::height() const {
-	return m_height;
+
+std::string MenuButton::name() const {
+	return m_name;
 }
-int MenuButton::width() const {
-	return m_width;
+
+void MenuButton::silentSelect() {
+	m_sprite.setTexture(m_selectedTexture);
+	m_isSelected = true;
 }
-int MenuButton::bottom() const {
-	return m_height + m_top;
+
+void MenuButton::select() {
+	m_sprite.setTexture(m_selectedTexture);
+	m_sound.play();
+	m_isSelected = true;
 }
-int MenuButton::right() const {
-	return m_width + m_left;
+void MenuButton::deselect() {
+	m_sprite.setTexture(m_unselectedTexture);
+	m_isSelected = false;
+}
+
+void MenuButton::draw(sf::RenderWindow& window) {
+	window.draw(m_sprite);
+}
+
+bool MenuButton::isSelected() const {
+	return m_isSelected;
 }
