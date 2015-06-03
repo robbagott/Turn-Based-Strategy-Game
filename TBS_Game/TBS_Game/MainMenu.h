@@ -25,9 +25,14 @@ public:
 private:
 	sf::Sprite m_background;
 	sf::Texture m_texture;
-	sf::Music music;
+	sf::Texture m_blackTexture;
+	sf::Sprite m_blackSprite;
+	sf::Music m_music;
 	int m_selectedButton;
 	std::vector<MenuButton*> buttons;
+
+	sf::Clock m_clock;
+	int m_fadeInTimeInSeconds;
 };
 
 #endif

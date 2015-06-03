@@ -23,6 +23,9 @@ public:
 	void draw(IStateBasedGame& game);
 
 private:
+	//Can't be instantiated without a target image filename
+	SplashScreen();
+
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
 

@@ -1,0 +1,17 @@
+{
+	"grass_1" : {
+		"texture" : "../Assets/Graphics/grass_1.bmp",
+		"isGround" : true,
+		"evasionBoost" : 0,
+		"deployable" : true,
+		"moveCost" : 1
+	},
+
+	"forest_1" : {
+		"texture" : "../Assets/Graphics/forest_1.bmp",
+		"isGround" : true,
+		"evasionBoost" : 15,
+		"deployable" : true,
+		"moveCost" : 1
+	}
+}

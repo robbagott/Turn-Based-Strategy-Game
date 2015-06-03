@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "IStateBasedGame.h"
 #include "AppInfo.h"
+#include <stack>
 
 class IGameState;
 
@@ -19,6 +20,8 @@ public:
 	void start();
 	//In a state based game, states request state changes to transition states
 	void requestChangeState(IGameState& gameState);
+	void requestPushState(IGameState& gameState);
+	void requestPopState(IGameState& gamestate);
 	//Any code that has access to the game engine can ask it nicely to quit
 	void requestQuit();
 	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea...
@@ -46,7 +49,7 @@ private:
 	static bool m_isInstantiated;
 	bool m_quitRequested;
 	bool m_changeStateRequested;
-	IGameState* m_gameState;
+	std::stack<IGameState*> m_gameStates;
 	IGameState* m_nextGameState;
 	sf::RenderWindow* m_mainWindow;
 	AppInfo* m_appInfo;

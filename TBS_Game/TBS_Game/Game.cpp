@@ -19,14 +19,17 @@ Game::Game() {
 	Game::m_changeStateRequested = false;
 
 	m_appInfo = new AppInfo("config.txt");
-	m_gameState = new NullGameState();
+	m_gameStates.push(new NullGameState());
 	m_nextGameState = new NullGameState();
 }
 
 Game::~Game() {
 	delete m_appInfo;
 	delete m_mainWindow;
-	delete m_gameState;
+	while(m_gameStates.size() != 0) {
+		delete m_gameStates.top();
+		m_gameStates.pop();
+	}
 	delete m_nextGameState;
 }
 
@@ -36,14 +39,12 @@ void Game::init() {
 	m_mainWindow->display();
 
 	if (m_appInfo->splashEnabled()) {
-		IGameState* newState = new SplashScreen("../Assets/Graphics/SplashScreen.bmp");
-		m_gameState = newState;
-		newState->init();
+		requestChangeState(*(new SplashScreen("../Assets/Graphics/SplashScreen.bmp")));
+		swapState();
 	}
 	else {
-		IGameState* newState = new MainMenu();
-		m_gameState = newState;
-		newState->init();
+		requestChangeState(*(new MainMenu()));
+		swapState();
 	}
 }
 
@@ -143,26 +144,27 @@ void Game::swapState() {
 		exit(1);
 	}
 
-	m_gameState->cleanup();
-	delete m_gameState;
-	m_gameState = m_nextGameState;
+	m_gameStates.top()->cleanup();
+	delete m_gameStates.top();
+	m_gameStates.pop();
+	m_gameStates.push(m_nextGameState);
 
 	//Reset nextGameState to NullGameState. 
 	//We don't want to accidentally deallocate the current gameState by deallocating nextGameState
 	m_nextGameState = new NullGameState();
-	m_gameState->init();
+	m_gameStates.top()->init();
 
 	m_changeStateRequested = false;
 }
 
 void Game::handleEvents() {
-	m_gameState->handleEvents(*this);
+	m_gameStates.top()->handleEvents(*this);
 }
 
 void Game::update() {
-	m_gameState->update(*this);
+	m_gameStates.top()->update(*this);
 }
 
 void Game::draw() {
-	m_gameState->draw(*this);
+	m_gameStates.top()->draw(*this);
 }

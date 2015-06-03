@@ -1,36 +1,46 @@
 #include "MainMenu.h"
 #include "NullGameState.h"
+#include "InMapState.h"
+#include "GameUtilities.h"
 #include <iostream>
 
-MainMenu::MainMenu() {
+MainMenu::MainMenu() : m_fadeInTimeInSeconds(2), m_selectedButton(0) {
 	if (!m_texture.loadFromFile("../Assets/Graphics/MainMenu.bmp")) {
-		std::cerr << "No Main Menu texture loaded." << std::endl;
-		exit(1);
-		char x;
-		std::cin >> x;
+		GameUtilities::exitWithMessage("No Main Menu Background texture loaded.");
 	}
 	m_background.setTexture(m_texture);
+
+	if (!m_blackTexture.loadFromFile("../Assets/Graphics/BlackScreen.bmp")) {
+		GameUtilities::exitWithMessage("No Main Menu Black Screen texture loaded.");
+	}
+	m_blackSprite.setTexture(m_blackTexture);
 
 	buttons.push_back(new MenuButton("New Game", "../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
 	buttons.push_back(new MenuButton("Load Game", "../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
 	buttons.push_back(new MenuButton("Options", "../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
 	buttons.push_back(new MenuButton("Quit", "../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
 
-	int m_selectedButton = 0;
-	music.openFromFile("../Assets/Sounds/main_menu.wav");
-	music.setLoop(true);
+	if (!m_music.openFromFile("../Assets/Sounds/main_menu.wav")) {
+		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
+	}
+	m_music.setLoop(true);
 }
 
-MainMenu::~MainMenu() {}
+MainMenu::~MainMenu() {
+	for (unsigned int i = 0; i < buttons.size(); i++) {
+		delete buttons[i];
+	}
+}
 
 void MainMenu::init() {
+	m_clock.restart();
 	std::cout << "Entering main menu state" << std::endl;
 	buttons[0]->silentSelect();
 	m_selectedButton = 0;
-	music.play();
+	m_music.play();
 }
 void MainMenu::cleanup() {
-	music.stop();
+	m_music.stop();
 }
 void MainMenu::pause() {}
 void MainMenu::resume() {}
@@ -112,16 +122,17 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 				}
 			}
 			else if (currentEvent.key.code == sf::Keyboard::Return || currentEvent.key.code == sf::Keyboard::Space) {
-				if (m_selectedButton == 1) {
+				if (m_selectedButton == 0) {
+					IGameState* newState = new InMapState("../Assets/Data/level_1.json");
+					game.requestChangeState(*newState);
+				}
+				else if (m_selectedButton == 1) {
 					game.requestQuit();
 				}
 				else if (m_selectedButton == 2) {
 					game.requestQuit();
 				}
 				else if (m_selectedButton == 3) {
-					game.requestQuit();
-				}
-				else if (m_selectedButton == 4) {
 					game.requestQuit();
 				}
 			}
@@ -134,12 +145,19 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 }
 
 void MainMenu::update(IStateBasedGame& game) {}
+
 void MainMenu::draw(IStateBasedGame& game) {
 	game.mainWindow()->clear(sf::Color::Black);
 
 	game.mainWindow()->draw(m_background);
-	for (int i = 0; i < buttons.size(); i++) {
+	for (unsigned int i = 0; i < buttons.size(); i++) {
 		buttons[i]->draw(*(game.mainWindow()));
+	}
+	if (m_clock.getElapsedTime().asSeconds() < m_fadeInTimeInSeconds) {
+		float percentage = (m_fadeInTimeInSeconds - m_clock.getElapsedTime().asSeconds())/ m_fadeInTimeInSeconds * 100;
+		float alpha =  GameUtilities::interpolate(0.0, 255.0, percentage);
+		m_blackSprite.setColor( sf::Color(255, 255, 255, alpha) );
+		game.mainWindow()->draw(m_blackSprite);
 	}
 
 	game.mainWindow()->display();

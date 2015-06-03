@@ -1,6 +1,5 @@
 #include "AppInfo.h"
 #include <fstream>
-#include <istream>
 #include <sstream>
 #include <iostream>
 #include "stdAfx.h"
