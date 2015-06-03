@@ -18,13 +18,13 @@ public:
 
 	//Called by outside code to start the game
 	void start();
-	//In a state based game, states request state changes to transition states
+	//In a state based game, states request state changes from the game engine in order to transition states
 	void requestChangeState(IGameState& gameState);
 	void requestPushState(IGameState& gameState);
 	void requestPopState(IGameState& gamestate);
 	//Any code that has access to the game engine can ask it nicely to quit
 	void requestQuit();
-	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea...
+	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea in retrospect...
 	sf::RenderWindow* mainWindow() const;
 
 private:
@@ -43,7 +43,7 @@ private:
 	void draw();
 	//Creates the game window with settings found in the Appinfo object. 
 	void initializeWindow();
-	//Actually swaps in the next requested GameState object
+	//Actually swaps in the next requested GameState object. private for a reason.
 	void swapState();
 
 	static bool m_isInstantiated;

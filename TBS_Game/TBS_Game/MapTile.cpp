@@ -44,14 +44,15 @@ MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : 
 	}
 
 	if (terrain.get("texture", "").isString()) {
-		std::string strTexture = terrain.get("texture", "").asString();
-		if (!m_texture.loadFromFile(strTexture)) {
-			GameUtilities::exitWithMessage("Failed to load tile texture: " + strTexture);
+		if (!m_texture.loadFromFile( terrain.get("texture", "").asString()) ) {
+			GameUtilities::exitWithMessage("Failed to load tile texture in " + terrainID);
 		}
 	}
 	else {
-		GameUtilities::exitWithMessage("Failed to load deployable from terrain.json with terrainID: " + terrainID);
+		GameUtilities::exitWithMessage("Failed to load tile texture from terrain.json with terrainID: " + terrainID);
 	}
+	m_sprite.setTexture(m_texture);
+	m_sprite.setPosition(50, 50);
 }
 MapTile::~MapTile() {}
 
@@ -69,5 +70,7 @@ bool MapTile::ground() {
 }
 
 void MapTile::draw(IStateBasedGame& game) {
-
+	std::cout << "HERE!: After draw" << std::endl;
+	game.mainWindow()->draw(m_sprite);
+	std::cout << "HERE!: After draw" << std::endl;
 }
