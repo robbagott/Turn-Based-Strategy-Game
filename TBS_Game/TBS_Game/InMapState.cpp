@@ -99,6 +99,8 @@ InMapState::InMapState(std::string filename) {
 	m_cursorOverlay.setTexture(m_cursorTexture);
 	m_cursorOverlay.setColor(sf::Color(255, 255, 255, 128));
 	m_cursorOverlay.setPosition(120, 56);
+
+	m_music.openFromFile("../Assets/Sounds/level_1.wav");
 }
 
 InMapState::~InMapState() {
@@ -109,9 +111,13 @@ InMapState::~InMapState() {
 	}
 }
 
-void InMapState::init() {}
+void InMapState::init() {
+	m_music.play();
+}
 
-void InMapState::cleanup() {}
+void InMapState::cleanup() {
+	m_music.stop();
+}
 
 void InMapState::pause() {}
 void InMapState::resume() {}
@@ -133,6 +139,7 @@ void InMapState::handleEvents(IStateBasedGame& game) {
 				moveSelected(m_selectedx, m_selectedy-1);
 			}
 			else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+				game.requestQuit();
 			}
 
 		}

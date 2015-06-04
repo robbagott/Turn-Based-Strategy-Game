@@ -2,6 +2,7 @@
 #define INMAPSTATE_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "IGameState.h"
 #include "MapTile.h"
 
@@ -33,6 +34,8 @@ private:
 
 	sf::Texture m_cursorTexture;
 	sf::Sprite m_cursorOverlay;
+
+	sf::Music m_music;
 };
 
 #endif
