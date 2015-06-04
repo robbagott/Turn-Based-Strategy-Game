@@ -1,6 +1,7 @@
 #ifndef INMAPSTATE_H
 #define INMAPSTATE_H
 
+#include <SFML/Graphics.hpp>
 #include "IGameState.h"
 #include "MapTile.h"
 
@@ -24,7 +25,14 @@ public:
 private:
 	InMapState();
 
-	std::vector<std::vector<MapTile>> tiles;
+	void moveSelected(int x, int y);
+
+	int m_selectedx;
+	int m_selectedy;
+	std::vector<std::vector<MapTile>> m_tiles;
+
+	sf::Texture m_cursorTexture;
+	sf::Sprite m_cursorOverlay;
 };
 
 #endif

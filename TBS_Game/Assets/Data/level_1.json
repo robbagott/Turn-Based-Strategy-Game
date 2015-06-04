@@ -1,0 +1,42 @@
+{
+	"width" : 3,
+	"height" : 3,
+	"startx" : 1,
+	"starty" : 1,
+	"0 0" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true
+	},
+	"0 1" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"0 2" : { 
+		"terrainID" : "forest_1",
+		"traversable" : true 
+	},
+	"1 0" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"1 1" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"1 2" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"2 0" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"2 1" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	},
+	"2 2" : { 
+		"terrainID" : "grass_1",
+		"traversable" : true 
+	}
+}

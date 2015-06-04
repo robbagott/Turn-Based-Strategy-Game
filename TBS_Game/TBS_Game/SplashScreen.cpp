@@ -15,7 +15,6 @@ SplashScreen::SplashScreen(std::string filename) {
 SplashScreen::~SplashScreen() {}
 
 void SplashScreen::init() {
-	std::cout << "Entering splash screen state" << std::endl;
 	return;
 }
 void SplashScreen::cleanup() {

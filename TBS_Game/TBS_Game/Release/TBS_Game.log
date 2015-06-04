@@ -1,10 +1,17 @@
-﻿Build started 6/3/2015 1:41:04 AM.
+﻿Build started 6/3/2015 8:32:37 PM.
      1>Project "C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\TBS_Game\TBS_Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\include\\" /Z7 /nologo /W3 /WX- /Ox /Oi /Oy /GT /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt InMapState.cpp MainMenu.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\include\\" /Z7 /nologo /W3 /WX- /Ox /Oi /Oy /GT /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp InMapState.cpp Main.cpp MainMenu.cpp MapTile.cpp SplashScreen.cpp
+         Game.cpp
          InMapState.cpp
+     1>InMapState.cpp(171): warning C4018: '>' : signed/unsigned mismatch
+         Main.cpp
          MainMenu.cpp
-     1>MainMenu.cpp(159): warning C4244: 'argument' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>MainMenu.cpp(173): warning C4244: 'argument' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>MainMenu.cpp(179): warning C4244: 'argument' : conversion from 'float' to 'sf::Uint8', possible loss of data
+         MapTile.cpp
+     1>MapTile.cpp(90): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+         SplashScreen.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Release\TBS_Game.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\lib" "sfml-graphics.lib" "sfml-window.lib" "sfml-system.lib" "sfml-audio.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Release\TBS_Game.pdb" /SUBSYSTEM:CONSOLE /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Release\TBS_Game.lib" /MACHINE:X86 /SAFESEH Release\AppInfo.obj
          Release\Game.obj
@@ -25,4 +32,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.73
+Time Elapsed 00:00:06.68

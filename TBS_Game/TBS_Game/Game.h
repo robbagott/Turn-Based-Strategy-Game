@@ -26,9 +26,11 @@ public:
 	void requestQuit();
 	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea in retrospect...
 	sf::RenderWindow* mainWindow() const;
+	AppInfo* appInfo();
 
 private:
-
+	//Prevent copying of the object (ensure single copy exists)
+	Game(const Game&) {}
 	//Called when started
 	void init();
 	//Called when exiting

@@ -1,19 +1,25 @@
 #include "MapTile.h"
 #include <fstream>
-#include <sstream>
-#include <iostream>
 #include "GameUtilities.h"
 #include "json.h"
 
-MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : m_traversable(traversable), m_posx(posx), m_posy(posy) {
+MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : 
+	m_traversable(traversable), 
+	m_gridPosx(posx), 
+	m_gridPosy(posy), 
+	m_occupied(false) {
+
 	std::ifstream terrainStream("../Assets/Data/terrain.json", std::ios_base::binary);
-	Json::Value root;
+	if (!terrainStream.good()) {
+		GameUtilities::exitWithMessage("failed to load terrainStream in MapTile constructor");
+	}
+	Json::Value root = NULL;
 	terrainStream >> root;
+	if (root == NULL) {
+		GameUtilities::exitWithMessage("Failed to load root from terrain.json with terrainID: " + terrainID);
+	}
 
 	Json::Value terrain = root[terrainID];
-	if (terrain == NULL) {
-		GameUtilities::exitWithMessage("Failed to load terrain from terrain.json with terrainID: " + terrainID);
-	}
 
 	if (terrain.get("isGround", "").isBool()) {
 		m_ground = terrain.get("isGround", "").asBool();
@@ -52,8 +58,19 @@ MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : 
 		GameUtilities::exitWithMessage("Failed to load tile texture from terrain.json with terrainID: " + terrainID);
 	}
 	m_sprite.setTexture(m_texture);
-	m_sprite.setPosition(50, 50);
+	m_sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
 }
+
+MapTile::MapTile() :
+	m_traversable (false),
+	m_gridPosx(0),
+	m_gridPosy(0),
+	m_occupied(false),
+	m_ground(false),
+	m_deployable(false),
+	m_moveCost(0),
+	m_evasionBoost(0) 
+{}
 MapTile::~MapTile() {}
 
 int MapTile::moveCost() {
@@ -69,8 +86,7 @@ bool MapTile::ground() {
 	return m_ground;
 }
 
-void MapTile::draw(IStateBasedGame& game) {
-	std::cout << "HERE!: After draw" << std::endl;
+void MapTile::draw(IStateBasedGame& game, int xpos, int ypos) {
+	m_sprite.setPosition(xpos, ypos);
 	game.mainWindow()->draw(m_sprite);
-	std::cout << "HERE!: After draw" << std::endl;
 }

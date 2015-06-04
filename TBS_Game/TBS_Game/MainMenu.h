@@ -23,16 +23,23 @@ public:
 	void draw(IStateBasedGame& game);
 
 private:
+	void onNewGamePushed();
+
 	sf::Sprite m_background;
 	sf::Texture m_texture;
 	sf::Texture m_blackTexture;
 	sf::Sprite m_blackSprite;
 	sf::Music m_music;
 	int m_selectedButton;
-	std::vector<MenuButton*> buttons;
+	std::vector<MenuButton*> m_buttons;
 
-	sf::Clock m_clock;
+	sf::Clock m_fadeInClock;
+	sf::Clock m_fadeOutClock;
 	int m_fadeInTimeInSeconds;
+	bool m_newGamePushed;
+	int m_fadeOutTimeInSeconds;
+	bool m_transitionNewGame;
+	bool m_responsive;
 };
 
 #endif

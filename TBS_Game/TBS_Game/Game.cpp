@@ -119,6 +119,8 @@ void Game::initializeWindow() {
 			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
 		}
 	}
+
+	m_mainWindow->setMouseCursorVisible(false);
 }
 
 void Game::requestQuit() {
@@ -167,4 +169,8 @@ void Game::update() {
 
 void Game::draw() {
 	m_gameStates.top()->draw(*this);
+}
+
+AppInfo* Game::appInfo() {
+	return m_appInfo;
 }

@@ -8,7 +8,7 @@ class MapTile
 {
 public:
 	enum TerrainID { TID_GRASS_1, TID_FOREST_1, TID_MOUNTAINS_1, TID_TID_ROAD_1 };
-
+	MapTile(); 
 	MapTile(std::string terrainID, bool traversable, int posx, int posy);
 	~MapTile(); 
 
@@ -17,10 +17,9 @@ public:
 	bool traversable();
 	bool ground();
 
-	void draw(IStateBasedGame& game);
+	void draw(IStateBasedGame& game, int xpos, int ypos);
 	
 private:
-	MapTile();
 
 	sf::Texture m_texture;
 	sf::Sprite m_sprite;
@@ -33,7 +32,7 @@ private:
 	unsigned int m_moveCost;
 	unsigned int m_evasionBoost;
 
-	int m_posx, m_posy;
+	int m_gridPosx, m_gridPosy;
 };
 
 #endif
