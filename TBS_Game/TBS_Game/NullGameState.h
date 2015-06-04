@@ -7,6 +7,7 @@ class IStateBasedGame;
 class NullGameState : public IGameState
 {
 public:
+	NullGameState() {}
 	void init() {}
 	void cleanup() {}
 
