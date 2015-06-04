@@ -31,6 +31,7 @@ public:
 private:
 	//Prevent copying of the object (ensure single copy exists)
 	Game(const Game&) {}
+	void operator=(const Game& other);
 	//Called when started
 	void init();
 	//Called when exiting

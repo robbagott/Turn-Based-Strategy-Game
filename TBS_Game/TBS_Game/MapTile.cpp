@@ -1,12 +1,13 @@
 #include "MapTile.h"
 #include <fstream>
+#include <iostream>
 #include "GameUtilities.h"
 #include "json.h"
 
 MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : 
 	m_traversable(traversable), 
-	m_gridPosx(posx), 
-	m_gridPosy(posy), 
+	m_gridx(posx), 
+	m_gridy(posy), 
 	m_occupied(false) {
 
 	std::ifstream terrainStream("../Assets/Data/terrain.json", std::ios_base::binary);
@@ -60,11 +61,13 @@ MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) :
 	m_sprite.setTexture(m_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
 }
-
+MapTile::MapTile(const MapTile& otherTile) {
+	*this = otherTile;
+}
 MapTile::MapTile() :
 	m_traversable (false),
-	m_gridPosx(0),
-	m_gridPosy(0),
+	m_gridx(0),
+	m_gridy(0),
 	m_occupied(false),
 	m_ground(false),
 	m_deployable(false),
@@ -72,21 +75,47 @@ MapTile::MapTile() :
 	m_evasionBoost(0) 
 {}
 MapTile::~MapTile() {}
+void MapTile::operator=(const MapTile& otherTile) {
+	m_texture = otherTile.m_texture;
+	m_sprite = otherTile.m_sprite;
+	m_sprite.setTexture(m_texture);
 
-int MapTile::moveCost() {
-	return m_moveCost;
-}
-bool MapTile::occupied() {
-	return m_occupied;
-}
-bool MapTile::traversable() {
-	return m_traversable;
-}
-bool MapTile::ground() {
-	return m_ground;
-}
+	m_traversable = otherTile.m_traversable;
+	m_occupied = otherTile.m_occupied;
 
+	m_ground = otherTile.m_ground;
+	m_deployable = otherTile.m_deployable;
+	m_moveCost = otherTile.m_moveCost;
+	m_evasionBoost = otherTile.m_evasionBoost;
+
+	m_gridx = otherTile.m_gridx;
+	m_gridy = otherTile.m_gridy;
+}
 void MapTile::draw(IStateBasedGame& game, int xpos, int ypos) {
 	m_sprite.setPosition(xpos, ypos);
 	game.mainWindow()->draw(m_sprite);
+}
+int MapTile::moveCost() const {
+	return m_moveCost;
+}
+bool MapTile::occupied() const {
+	return m_occupied;
+}
+bool MapTile::traversable() const {
+	return m_traversable;
+}
+bool MapTile::ground() const {
+	return m_ground;
+}
+int MapTile::gridx() const {
+	return m_gridx;
+}
+int MapTile::gridy() const {
+	return m_gridy;
+}
+bool MapTile::deployable() const {
+	return m_deployable;
+}
+int MapTile::evasionBoost() const {
+	return m_evasionBoost;
 }

@@ -23,6 +23,9 @@ public:
 	void draw(IStateBasedGame& game);
 
 private:
+	//program shouldn't be calling undefined code from under my nose!
+	void operator=(const MainMenu&);
+
 	void onNewGamePushed();
 
 	sf::Sprite m_background;
@@ -31,7 +34,7 @@ private:
 	sf::Sprite m_blackSprite;
 	sf::Music m_music;
 	int m_selectedButton;
-	std::vector<MenuButton*> m_buttons;
+	std::vector<MenuButton> m_buttons;
 
 	sf::Clock m_fadeInClock;
 	sf::Clock m_fadeOutClock;

@@ -10,12 +10,18 @@ public:
 	enum TerrainID { TID_GRASS_1, TID_FOREST_1, TID_MOUNTAINS_1, TID_TID_ROAD_1 };
 	MapTile(); 
 	MapTile(std::string terrainID, bool traversable, int posx, int posy);
+	MapTile(const MapTile& otherTile);
 	~MapTile(); 
+	void operator=(const MapTile& otherTile);
 
-	int moveCost();
-	bool occupied();
-	bool traversable();
-	bool ground();
+	int moveCost() const;
+	int evasionBoost() const;
+	bool occupied() const;
+	bool traversable() const;
+	bool deployable() const;
+	bool ground() const;
+	int gridx() const;
+	int gridy() const;
 
 	void draw(IStateBasedGame& game, int xpos, int ypos);
 	
@@ -32,7 +38,7 @@ private:
 	unsigned int m_moveCost;
 	unsigned int m_evasionBoost;
 
-	int m_gridPosx, m_gridPosy;
+	int m_gridx, m_gridy;
 };
 
 #endif

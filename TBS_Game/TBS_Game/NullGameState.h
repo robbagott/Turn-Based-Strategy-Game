@@ -16,5 +16,9 @@ public:
 	void handleEvents(IStateBasedGame& game) { game.requestQuit(); }
 	void update(IStateBasedGame& game) {}
 	void draw(IStateBasedGame& game) {}
+
+private:
+	NullGameState(const NullGameState&);
+	void operator=(const NullGameState&);
 };
 #endif

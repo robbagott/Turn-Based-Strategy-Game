@@ -25,6 +25,8 @@ public:
 
 private:
 	InMapState();
+	InMapState(const InMapState& otherState);
+	void operator=(const InMapState& otherState);
 
 	void moveSelected(int x, int y);
 

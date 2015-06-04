@@ -8,7 +8,8 @@ class MenuButton
 {
 public:
 	MenuButton(std::string name, std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width);
-
+	MenuButton(const MenuButton&);
+	void operator=(const MenuButton&);
 	std::string name() const;
 	const sf::Vector2f& position() const;
 	sf::FloatRect bounds() const;
@@ -20,6 +21,9 @@ public:
 	void draw(sf::RenderWindow& window);
 
 private:
+	//undefined
+	MenuButton();
+
 	sf::Texture m_selectedTexture;
 	sf::Texture m_unselectedTexture;
 	sf::Sprite m_sprite;

@@ -25,6 +25,9 @@ public:
 private:
 	//Can't be instantiated without a target image filename
 	SplashScreen();
+	//program shouldn't start calling undefined copiers under my nose!
+	SplashScreen(const SplashScreen&);
+	void operator=(const SplashScreen&);
 
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;

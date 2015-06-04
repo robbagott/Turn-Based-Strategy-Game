@@ -20,6 +20,9 @@ public:
 	bool stretchToFitEnabled() const;
 
 private:
+	AppInfo();
+	AppInfo(const AppInfo& other);
+	void operator=(const AppInfo& other);
 
 	int m_windowWidth, m_windowHeight;
 	bool m_splashEnabled;

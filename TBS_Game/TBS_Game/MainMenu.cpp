@@ -22,10 +22,10 @@ MainMenu::MainMenu() :
 	}
 	m_blackSprite.setTexture(m_blackTexture);
 
-	m_buttons.push_back(new MenuButton("New Game", "../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
-	m_buttons.push_back(new MenuButton("Load Game", "../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
-	m_buttons.push_back(new MenuButton("Options", "../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
-	m_buttons.push_back(new MenuButton("Quit", "../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
+	m_buttons.push_back(MenuButton("New Game", "../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
+	m_buttons.push_back(MenuButton("Load Game", "../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
+	m_buttons.push_back(MenuButton("Options", "../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
+	m_buttons.push_back(MenuButton("Quit", "../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
 
 	if (!m_music.openFromFile("../Assets/Sounds/main_menu.wav")) {
 		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
@@ -34,14 +34,11 @@ MainMenu::MainMenu() :
 }
 
 MainMenu::~MainMenu() {
-	for (unsigned int i = 0; i < m_buttons.size(); i++) {
-		delete m_buttons[i];
-	}
 }
 
 void MainMenu::init() {
 	m_fadeInClock.restart();
-	m_buttons[0]->silentSelect();
+	m_buttons[0].silentSelect();
 	m_selectedButton = 0;
 	m_music.play();
 }
@@ -61,31 +58,31 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 						//Do nothing due to left edge
 					}
 					if (m_selectedButton == 1) {
-						m_buttons[1]->deselect();
-						m_buttons[0]->select();
+						m_buttons[1].deselect();
+						m_buttons[0].select();
 						m_selectedButton = 0;
 					}
 					if (m_selectedButton == 2) {
 						//Do nothing due to left edge
 					}
 					if (m_selectedButton == 3) {
-						m_buttons[3]->deselect();
-						m_buttons[2]->select();
+						m_buttons[3].deselect();
+						m_buttons[2].select();
 						m_selectedButton = 2;
 					}
 				}
 				else if (currentEvent.key.code == sf::Keyboard::D || currentEvent.key.code == sf::Keyboard::Right) {
 					if (m_selectedButton == 0) {
-						m_buttons[0]->deselect();
-						m_buttons[1]->select();
+						m_buttons[0].deselect();
+						m_buttons[1].select();
 						m_selectedButton = 1;
 					}
 					if (m_selectedButton == 1) {
 						//Do nothing due to right edge
 					}
 					if (m_selectedButton == 2) {
-						m_buttons[2]->deselect();
-						m_buttons[3]->select();
+						m_buttons[2].deselect();
+						m_buttons[3].select();
 						m_selectedButton = 3;
 					}
 					if (m_selectedButton == 3) {
@@ -94,13 +91,13 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 				}
 				else if (currentEvent.key.code == sf::Keyboard::S || currentEvent.key.code == sf::Keyboard::Down) {
 					if (m_selectedButton == 0) {
-						m_buttons[0]->deselect();
-						m_buttons[2]->select();
+						m_buttons[0].deselect();
+						m_buttons[2].select();
 						m_selectedButton = 2;
 					}
 					if (m_selectedButton == 1) {
-						m_buttons[1]->deselect();
-						m_buttons[3]->select();
+						m_buttons[1].deselect();
+						m_buttons[3].select();
 						m_selectedButton = 3;
 					}
 					if (m_selectedButton == 2) {
@@ -118,13 +115,13 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 						//Do nothing due to top edge
 					}
 					if (m_selectedButton == 2) {
-						m_buttons[2]->deselect();
-						m_buttons[0]->select();
+						m_buttons[2].deselect();
+						m_buttons[0].select();
 						m_selectedButton = 0;
 					}
 					if (m_selectedButton == 3) {
-						m_buttons[3]->deselect();
-						m_buttons[1]->select();
+						m_buttons[3].deselect();
+						m_buttons[1].select();
 						m_selectedButton = 1;
 					}
 				}
@@ -163,7 +160,7 @@ void MainMenu::draw(IStateBasedGame& game) {
 
 	game.mainWindow()->draw(m_background);
 	for (unsigned int i = 0; i < m_buttons.size(); i++) {
-		m_buttons[i]->draw(*(game.mainWindow()));
+		m_buttons[i].draw(*(game.mainWindow()));
 	}
 
 	if (m_newGamePushed) {
@@ -185,7 +182,7 @@ void MainMenu::draw(IStateBasedGame& game) {
 
 void MainMenu::onNewGamePushed() {
 	//play new game sound
-	m_buttons[0]->select();
+	m_buttons[0].select();
 	m_newGamePushed = true;
 	m_fadeOutClock.restart();
 	m_responsive = false;

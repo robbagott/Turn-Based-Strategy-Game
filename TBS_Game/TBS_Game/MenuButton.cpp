@@ -29,6 +29,25 @@ MenuButton::MenuButton(std::string name, std::string selectedFilename, std::stri
 	}
 	m_sound.setBuffer(m_selectSound);
 }
+MenuButton::MenuButton(const MenuButton& other) {
+	*this = other;
+}
+void MenuButton::operator=(const MenuButton& other) {
+	m_selectedTexture = other.m_selectedTexture;
+	m_unselectedTexture = other.m_unselectedTexture;
+	m_sprite = other.m_sprite;
+	if (other.m_isSelected) {
+		m_sprite.setTexture(m_selectedTexture);
+	}
+	else {
+		m_sprite.setTexture(m_unselectedTexture);
+	}
+	m_sound = other.m_sound;
+	m_selectSound = other.m_selectSound;
+	m_sound.setBuffer(m_selectSound);
+	m_isSelected = other.m_isSelected;
+	m_name = other.m_name;
+}
 
 const sf::Vector2f& MenuButton::position() const {
 	return m_sprite.getPosition();

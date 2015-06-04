@@ -89,7 +89,7 @@ InMapState::InMapState(std::string filename) {
 				GameUtilities::exitWithMessage("Failed to load " + exitStream.str() + " from " + filename);
 			}
 
-			m_tiles[i][j] = *(new MapTile(terrainID, traversable, i, j));
+			m_tiles[i][j] = MapTile(terrainID, traversable, i, j);
 		}
 	}
 
@@ -104,11 +104,6 @@ InMapState::InMapState(std::string filename) {
 }
 
 InMapState::~InMapState() {
-	for (unsigned int i = 0; i < m_tiles.size(); i++) {
-		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			delete &m_tiles[i][j];
-		}
-	}
 }
 
 void InMapState::init() {

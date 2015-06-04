@@ -141,13 +141,9 @@ void Game::requestChangeState(IGameState& newState) {
 	m_changeStateRequested = true;
 }
 
-void Game::requestPushState(IGameState& newState) {
+void Game::requestPushState(IGameState& newState) {}
 
-}
-
-void Game::requestPopState(IGameState& newState) {
-
-}
+void Game::requestPopState(IGameState& newState) {}
 
 void Game::swapState() {
 	if (!m_changeStateRequested) {
