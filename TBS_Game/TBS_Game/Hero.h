@@ -2,6 +2,7 @@
 #define HERO_H
 
 #include "ICharacter.h"
+#include <SFML/Graphics.hpp>
 
 class Hero : public ICharacter
 {
@@ -17,6 +18,7 @@ public:
 
 private:
 	
+	sf::Sprite m_sprite;
 };
 
 #endif

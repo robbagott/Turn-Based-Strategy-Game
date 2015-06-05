@@ -57,6 +57,9 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppInfo.h">
@@ -113,7 +116,7 @@
     <ClInclude Include="ICharacter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TexturePaths.h">
+    <ClInclude Include="SpriteSheetcpp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
