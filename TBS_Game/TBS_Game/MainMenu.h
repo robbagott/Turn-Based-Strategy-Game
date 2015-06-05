@@ -5,8 +5,6 @@
 #include "IGameState.h"
 #include "MenuButton.h"
 
-class IStateBasedGame;
-
 class MainMenu : public IGameState
 {
 public:
@@ -18,9 +16,9 @@ public:
 	void pause();
 	void resume();
 
-	void handleEvents(IStateBasedGame& game);
-	void update(IStateBasedGame& game);
-	void draw(IStateBasedGame& game);
+	void handleEvents(Game& game);
+	void update(Game& game);
+	void draw(Game& game);
 
 private:
 	//program shouldn't be calling undefined code from under my nose!

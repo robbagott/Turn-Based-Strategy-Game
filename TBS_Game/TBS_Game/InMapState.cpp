@@ -5,7 +5,7 @@
 #include "GameUtilities.h"
 #include "Json.h"
 
-InMapState::InMapState(std::string filename) {	
+InMapState::InMapState(Game& game, std::string filename) {	
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
 		GameUtilities::exitWithMessage("failed to load " + filename + " in InMapState constructor");
@@ -98,7 +98,7 @@ InMapState::InMapState(std::string filename) {
 	}
 	m_cursorOverlay.setTexture(m_cursorTexture);
 	m_cursorOverlay.setColor(sf::Color(255, 255, 255, 128));
-	m_cursorOverlay.setPosition(120, 56);
+	m_cursorOverlay.setPosition(game.appInfo().centerScreenx() - 8, game.appInfo().centerScreeny() - 8);
 
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
 }
@@ -117,7 +117,7 @@ void InMapState::cleanup() {
 void InMapState::pause() {}
 void InMapState::resume() {}
 
-void InMapState::handleEvents(IStateBasedGame& game) {
+void InMapState::handleEvents(Game& game) {
 	sf::Event event;
 	while (game.mainWindow()->pollEvent(event)) {
 		if (event.type == sf::Event::EventType::KeyPressed) {
@@ -145,20 +145,19 @@ void InMapState::handleEvents(IStateBasedGame& game) {
 	}
 }
 
-void InMapState::update(IStateBasedGame& game) {}
+void InMapState::update(Game& game) {}
 
-void InMapState::draw(IStateBasedGame& game){
+void InMapState::draw(Game& game){
 	game.mainWindow()->clear(sf::Color::Black);
 
 	//Draw tiles
-	static const int centerScreenx = 128;
-	static const int centerScreeny = 64;
+	
 	int drawx = 0;
 	int	drawy = 0;
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			drawx = (centerScreenx - 8) + (i - m_selectedx) * 16;
-			drawy = (centerScreeny - 8) + (j - m_selectedy) * 16;
+			drawx = (game.appInfo().centerScreenx() - 8) + (i - m_selectedx) * 16;
+			drawy = (game.appInfo().centerScreeny() - 8) + (j - m_selectedy) * 16;
 			m_tiles[i][j].draw(game, drawx , drawy);
 		}
 	}

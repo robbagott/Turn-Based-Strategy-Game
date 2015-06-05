@@ -1,30 +1,29 @@
 #include "AppInfo.h"
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include "stdAfx.h"
 
-using namespace std;
 
-AppInfo::AppInfo(std::string configFilename)
-{
+AppInfo::AppInfo() {
 	//set defaults
 	m_windowWidth = 256;
 	m_windowHeight = 144;
+	m_resx = 256;
+	m_resy = 144;
 	m_screenMode = SM_WINDOW;
 	m_splashEnabled = true;
 	m_stretchToFit = false;
 
-	//set from config file
-	ifstream configStream("config.txt");
-	stringstream ss;
-	string valueStr = "";
+	//set from EXPECTED config file
+	std::ifstream configStream("config.txt");
+	std::stringstream ss;
+	std::string valueStr = "";
 	while (configStream.good())
 	{
 		getline(configStream, valueStr);
 
 		//if the config file contains the screen_width setting, set appropriately
-		if (valueStr.find("screen_width") != string::npos) {
+		if (valueStr.find("screen_width") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
 			ss >> m_windowWidth;
@@ -33,7 +32,7 @@ AppInfo::AppInfo(std::string configFilename)
 		}
 
 		//Do same for screen_height
-		else if (valueStr.find("screen_height") != string::npos) {
+		else if (valueStr.find("screen_height") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
 			ss >> m_windowHeight;
@@ -41,8 +40,8 @@ AppInfo::AppInfo(std::string configFilename)
 			ss.clear();
 		}
 
-		else if (valueStr.find("fullscreen") != string::npos) {
-			string value = "";
+		else if (valueStr.find("fullscreen") != std::string::npos) {
+			std::string value = "";
 
 			ss.str(valueStr);
 			ss >> value;
@@ -61,8 +60,8 @@ AppInfo::AppInfo(std::string configFilename)
 			}
 		}
 
-		else if (valueStr.find("show_splash") != string::npos) {
-			string value = "";
+		else if (valueStr.find("show_splash") != std::string::npos) {
+			std::string value = "";
 
 			ss.str(valueStr);
 			ss >> valueStr;
@@ -78,7 +77,7 @@ AppInfo::AppInfo(std::string configFilename)
 			}
 		}
 
-		else if (valueStr.find("resolution_x") != string::npos) {
+		else if (valueStr.find("resolution_x") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
 			ss >> m_resx;
@@ -86,7 +85,7 @@ AppInfo::AppInfo(std::string configFilename)
 			ss.clear();
 		}
 
-		else if (valueStr.find("resolution_y") != string::npos) {
+		else if (valueStr.find("resolution_y") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
 			ss >> m_resy;
@@ -94,7 +93,7 @@ AppInfo::AppInfo(std::string configFilename)
 			ss.clear();
 		}
 
-		else if (valueStr.find("stretch_to_fit") != string::npos) {
+		else if (valueStr.find("stretch_to_fit") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
 			ss >> m_stretchToFit;
@@ -105,9 +104,9 @@ AppInfo::AppInfo(std::string configFilename)
 
 #ifdef DEBUG
 
-	std::cout << "width: "<< m_windowWidth 
+	std::cout << "width: " << m_windowWidth
 		<< ", height: " << m_windowHeight
-		<< ", screen mode: " << m_screenMode 
+		<< ", screen mode: " << m_screenMode
 		<< ", showing splash: " << m_splashEnabled << std::endl;
 #endif
 }
@@ -138,4 +137,12 @@ int AppInfo::resy() const {
 
 bool AppInfo::stretchToFitEnabled() const {
 	return m_stretchToFit;
+}
+
+int AppInfo::centerScreenx() {
+	return m_resx / 2;
+}
+
+int AppInfo::centerScreeny(){
+	return m_resy / 2;
 }

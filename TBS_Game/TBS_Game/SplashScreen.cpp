@@ -29,7 +29,7 @@ void SplashScreen::resume() {
 	return;
 }
 
-void SplashScreen::handleEvents(IStateBasedGame& game) {
+void SplashScreen::handleEvents(Game& game) {
 	static sf::Time startTime = m_clock.getElapsedTime();
 
 	sf::Event currentEvent;
@@ -49,11 +49,11 @@ void SplashScreen::handleEvents(IStateBasedGame& game) {
 	}
 }
 
-void SplashScreen::update(IStateBasedGame& game) {
+void SplashScreen::update(Game& game) {
 	
 }
 
-void SplashScreen::draw(IStateBasedGame& game) {
+void SplashScreen::draw(Game& game) {
 	game.mainWindow()->clear(sf::Color::Black);
 	game.mainWindow()->draw(m_sprite);
 	game.mainWindow()->display();

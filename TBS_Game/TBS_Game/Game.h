@@ -3,14 +3,14 @@
 
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include "IStateBasedGame.h"
 #include "AppInfo.h"
+#include "TextureManager.h"
 #include <stack>
 
 class IGameState;
 
 //GameManager can only be instantiated once
-class Game : public IStateBasedGame
+class Game
 {
 public:
 	Game();
@@ -26,7 +26,7 @@ public:
 	void requestQuit();
 	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea in retrospect...
 	sf::RenderWindow* mainWindow() const;
-	AppInfo* appInfo();
+	AppInfo& appInfo();
 
 private:
 	//Prevent copying of the object (ensure single copy exists)
@@ -55,7 +55,8 @@ private:
 	std::stack<IGameState*> m_gameStates;
 	IGameState* m_nextGameState;
 	sf::RenderWindow* m_mainWindow;
-	AppInfo* m_appInfo;
+	AppInfo m_appInfo;
+	TextureManager* textureMgr;
 };
 
 #endif

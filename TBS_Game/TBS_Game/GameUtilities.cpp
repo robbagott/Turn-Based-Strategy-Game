@@ -6,7 +6,7 @@ namespace GameUtilities {
 
 	float interpolate(float x, float y, float percentage) {
 		if (percentage > 100) {
-			percentage = 0;
+			percentage = 100;
 		}
 		else if (percentage < 0) {
 			percentage = 0;

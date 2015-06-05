@@ -2,7 +2,7 @@
 #define MAPTILE_H
 
 #include <SFML/Graphics.hpp>
-#include "IStateBasedGAme.h"
+#include "Game.h"
 
 class MapTile
 {
@@ -23,7 +23,7 @@ public:
 	int gridx() const;
 	int gridy() const;
 
-	void draw(IStateBasedGame& game, int xpos, int ypos);
+	void draw(Game& game, int xpos, int ypos);
 	
 private:
 

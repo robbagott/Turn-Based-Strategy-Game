@@ -91,7 +91,7 @@ void MapTile::operator=(const MapTile& otherTile) {
 	m_gridx = otherTile.m_gridx;
 	m_gridy = otherTile.m_gridy;
 }
-void MapTile::draw(IStateBasedGame& game, int xpos, int ypos) {
+void MapTile::draw(Game& game, int xpos, int ypos) {
 	m_sprite.setPosition(xpos, ypos);
 	game.mainWindow()->draw(m_sprite);
 }

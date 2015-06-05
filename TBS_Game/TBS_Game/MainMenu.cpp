@@ -48,7 +48,7 @@ void MainMenu::cleanup() {
 void MainMenu::pause() {}
 void MainMenu::resume() {}
 
-void MainMenu::handleEvents(IStateBasedGame& game) {
+void MainMenu::handleEvents(Game& game) {
 	sf::Event currentEvent;
 	while (game.mainWindow()->pollEvent(currentEvent)) {
 		if (m_responsive) {
@@ -146,16 +146,16 @@ void MainMenu::handleEvents(IStateBasedGame& game) {
 	}
 }
 
-void MainMenu::update(IStateBasedGame& game) {
+void MainMenu::update(Game& game) {
 	if (m_newGamePushed && m_fadeOutClock.getElapsedTime().asSeconds() > m_fadeOutTimeInSeconds) {
 		m_music.stop();
 
-		IGameState* newState = new InMapState("../Assets/Data/level_1.json");
+		IGameState* newState = new InMapState(game, "../Assets/Data/level_1.json");
 		game.requestChangeState(*newState);
 	}
 }
 
-void MainMenu::draw(IStateBasedGame& game) {
+void MainMenu::draw(Game& game) {
 	game.mainWindow()->clear(sf::Color::Black);
 
 	game.mainWindow()->draw(m_background);

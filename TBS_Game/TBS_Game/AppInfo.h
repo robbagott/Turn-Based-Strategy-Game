@@ -2,12 +2,11 @@
 #define APPINFO_H
 
 #include <SFML/Window.hpp>
-#include <string>
 
 class AppInfo
 {
 public:
-	AppInfo(std::string configFilename);
+	AppInfo();
 
 	enum ScreenMode { SM_FULLSCREEN, SM_BORDERLESSWINDOW, SM_WINDOW };
 
@@ -18,9 +17,10 @@ public:
 	ScreenMode screenMode() const;
 	bool splashEnabled() const;
 	bool stretchToFitEnabled() const;
+	int centerScreenx();
+	int centerScreeny();
 
 private:
-	AppInfo();
 	AppInfo(const AppInfo& other);
 	void operator=(const AppInfo& other);
 

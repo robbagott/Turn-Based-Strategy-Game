@@ -1,7 +1,8 @@
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#ifndef GAMEUTILITIES_H
+#define GAMEUTILITIES_H
 
 #include <string>
+
 namespace GameUtilities {
 
 	//returns the interpolated value between x and y 

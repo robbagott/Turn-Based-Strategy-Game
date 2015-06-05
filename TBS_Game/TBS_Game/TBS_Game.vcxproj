@@ -96,6 +96,7 @@
     <ClCompile Include="AppInfo.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
+    <ClCompile Include="Hero.cpp" />
     <ClCompile Include="InMapState.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -104,14 +105,17 @@
     <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="stdAfx.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppInfo.h" />
+    <ClInclude Include="ICharacter.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="IGameActor.h" />
+    <ClInclude Include="Hero.h" />
     <ClInclude Include="InMapState.h" />
-    <ClInclude Include="IStateBasedGame.h" />
     <ClInclude Include="IGameState.h" />
     <ClInclude Include="json-forwards.h" />
     <ClInclude Include="json.h" />
@@ -121,6 +125,7 @@
     <ClInclude Include="NullGameState.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="stdAfx.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="GameUtilities.h" />

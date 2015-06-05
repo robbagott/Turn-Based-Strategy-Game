@@ -6,12 +6,10 @@
 #include "IGameState.h"
 #include "MapTile.h"
 
-class IStateBasedGame;
-
 class InMapState : public IGameState
 {
 public:
-	InMapState(std::string filename);
+	InMapState(Game& game, std::string filename);
 	~InMapState();
 	void init();
 	void cleanup();
@@ -19,9 +17,9 @@ public:
 	void pause();
 	void resume();
 
-	void handleEvents(IStateBasedGame& game);
-	void update(IStateBasedGame& game);
-	void draw(IStateBasedGame& game);
+	void handleEvents(Game& game);
+	void update(Game& game);
+	void draw(Game& game);
 
 private:
 	InMapState();

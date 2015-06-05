@@ -2,7 +2,6 @@
 #define NULLGAMESTATE_H
 
 #include "IGameState.h"
-class IStateBasedGame;
 
 class NullGameState : public IGameState
 {
@@ -14,9 +13,9 @@ public:
 	void pause() {}
 	void resume() {}
 
-	void handleEvents(IStateBasedGame& game) { game.requestQuit(); }
-	void update(IStateBasedGame& game) {}
-	void draw(IStateBasedGame& game) {}
+	void handleEvents(Game& game) { game.requestQuit(); }
+	void update(Game& game) {}
+	void draw(Game& game) {}
 
 private:
 	NullGameState(const NullGameState&);

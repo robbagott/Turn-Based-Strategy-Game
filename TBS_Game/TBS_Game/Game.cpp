@@ -2,6 +2,7 @@
 #include "SplashScreen.h"
 #include "MainMenu.h"
 #include "NullGameState.h"
+#include "GameUtilities.h"
 #include <iostream>
 
 bool Game::m_isInstantiated = false;
@@ -9,22 +10,17 @@ bool Game::m_isInstantiated = false;
 Game::Game() {
 	//There can only be one
 	if (Game::m_isInstantiated) {
-		std::cerr << "Attempted to instatiate a second instance of Game." << std::endl;
-		char x;
-		std::cin >> x;
-		exit(1);
+		GameUtilities::exitWithMessage("Attempted to instatiate a second instance of Game.");
 	}
 	Game::m_isInstantiated = true;
 	Game::m_quitRequested = false;
 	Game::m_changeStateRequested = false;
 
-	m_appInfo = new AppInfo("config.txt");
 	m_gameStates.push(new NullGameState());
 	m_nextGameState = new NullGameState();
 }
 
 Game::~Game() {
-	delete m_appInfo;
 	delete m_mainWindow;
 	while(m_gameStates.size() != 0) {
 		delete m_gameStates.top();
@@ -38,7 +34,7 @@ void Game::init() {
 	m_mainWindow->clear(sf::Color::Black);
 	m_mainWindow->display();
 
-	if (m_appInfo->splashEnabled()) {
+	if (m_appInfo.splashEnabled()) {
 		requestChangeState(*(new SplashScreen("../Assets/Graphics/SplashScreen.bmp")));
 		swapState();
 	}
@@ -70,53 +66,53 @@ void Game::gameLoop() {
 }
 
 void Game::initializeWindow() {
-	if (m_appInfo->screenMode() == AppInfo::SM_FULLSCREEN) {
+	if (m_appInfo.screenMode() == AppInfo::SM_FULLSCREEN) {
 		//Create window
 		m_mainWindow = new sf::RenderWindow(sf::VideoMode::getDesktopMode(), "TBS_Game", sf::Style::Fullscreen);
 
 		//Handle stretching/scaline
-		if (m_appInfo->stretchToFitEnabled()) {
-			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		if (m_appInfo.stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo.resx(), (float)m_appInfo.resy())));
 		}
 		else {
 			int fullWidth = sf::VideoMode::getDesktopMode().width;
 			int fullHeight = sf::VideoMode::getDesktopMode().height;
-			int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
-			int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
-			int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
-			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+			int maxScaling = std::min(fullWidth / m_appInfo.resx(), fullHeight / m_appInfo.resy());
+			int xOffset = (fullWidth - m_appInfo.resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (fullHeight - m_appInfo.resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo.resx() + 2 * xOffset, (float)m_appInfo.resy() + 2 * yOffset)));
 		}
 	}
-	else if (m_appInfo->screenMode() == AppInfo::SM_BORDERLESSWINDOW) {
+	else if (m_appInfo.screenMode() == AppInfo::SM_BORDERLESSWINDOW) {
 		//Create window
-		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo->windowWidth(), m_appInfo->windowHeight()), "TBS_Game", sf::Style::None);
+		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo.windowWidth(), m_appInfo.windowHeight()), "TBS_Game", sf::Style::None);
 
 		//Handle stretching/scaling
-		if (m_appInfo->stretchToFitEnabled()) {
-			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		if (m_appInfo.stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo.resx(), (float)m_appInfo.resy())));
 		}
 		else {
 			int fullWidth = sf::VideoMode::getDesktopMode().width;
 			int fullHeight = sf::VideoMode::getDesktopMode().height;
-			int maxScaling = std::min(fullWidth / m_appInfo->resx(), fullHeight / m_appInfo->resy());
-			int xOffset = (fullWidth - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
-			int yOffset = (fullHeight - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
-			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+			int maxScaling = std::min(fullWidth / m_appInfo.resx(), fullHeight / m_appInfo.resy());
+			int xOffset = (fullWidth - m_appInfo.resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (fullHeight - m_appInfo.resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo.resx() + 2 * xOffset, (float)m_appInfo.resy() + 2 * yOffset)));
 		}
 	}
 	else {
 		//Create Window
-		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo->windowWidth(), m_appInfo->windowHeight()), "TBS_Game");
+		m_mainWindow = new sf::RenderWindow(sf::VideoMode(m_appInfo.windowWidth(), m_appInfo.windowHeight()), "TBS_Game");
 
 		//Handle stretching/scaling
-		if (m_appInfo->stretchToFitEnabled()) {
-			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo->resx(), (float)m_appInfo->resy())));
+		if (m_appInfo.stretchToFitEnabled()) {
+			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)m_appInfo.resx(), (float)m_appInfo.resy())));
 		}
 		else {
-			int maxScaling = std::min(m_appInfo->windowWidth() / m_appInfo->resx(), m_appInfo->windowHeight() / m_appInfo->resy());
-			int xOffset = (m_appInfo->windowWidth() - m_appInfo->resx()*maxScaling) / (2 * maxScaling);
-			int yOffset = (m_appInfo->windowHeight() - m_appInfo->resy()*maxScaling) / (2 * maxScaling);
-			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo->resx() + 2 * xOffset, (float)m_appInfo->resy() + 2 * yOffset)));
+			int maxScaling = std::min(m_appInfo.windowWidth() / m_appInfo.resx(), m_appInfo.windowHeight() / m_appInfo.resy());
+			int xOffset = (m_appInfo.windowWidth() - m_appInfo.resx()*maxScaling) / (2 * maxScaling);
+			int yOffset = (m_appInfo.windowHeight() - m_appInfo.resy()*maxScaling) / (2 * maxScaling);
+			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)m_appInfo.resx() + 2 * xOffset, (float)m_appInfo.resy() + 2 * yOffset)));
 		}
 	}
 
@@ -175,6 +171,6 @@ void Game::draw() {
 	m_gameStates.top()->draw(*this);
 }
 
-AppInfo* Game::appInfo() {
+AppInfo& Game::appInfo() {
 	return m_appInfo;
 }

@@ -4,8 +4,6 @@
 #include <SFML/Graphics.hpp>
 #include "IGameState.h"
 
-class IStateBasedGame;
-
 class SplashScreen : public IGameState
 {
 public:
@@ -18,9 +16,9 @@ public:
 	void pause();
 	void resume();
 	
-	void handleEvents(IStateBasedGame& game);
-	void update(IStateBasedGame& game);
-	void draw(IStateBasedGame& game);
+	void handleEvents(Game& game);
+	void update(Game& game);
+	void draw(Game& game);
 
 private:
 	//Can't be instantiated without a target image filename

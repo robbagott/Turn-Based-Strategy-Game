@@ -1,8 +1,7 @@
 #ifndef IGAMESTATE_H
 #define IGAMESTATE_H
 
-#include "IStateBasedGame.h"
-class IStateBasedGame;
+#include "Game.h"
 
 class IGameState
 {
@@ -13,9 +12,9 @@ public:
 	virtual void pause() = 0;
 	virtual void resume() = 0;
 
-	virtual void handleEvents(IStateBasedGame& game) = 0;
-	virtual void update(IStateBasedGame& game) = 0;
-	virtual void draw(IStateBasedGame& game) = 0;
+	virtual void handleEvents(Game& game) = 0;
+	virtual void update(Game& game) = 0;
+	virtual void draw(Game& game) = 0;
 };
 
 #endif
