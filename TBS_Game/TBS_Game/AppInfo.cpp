@@ -6,10 +6,13 @@
 
 AppInfo::AppInfo() {
 	//set defaults
-	m_windowWidth = 256;
-	m_windowHeight = 144;
 	m_resx = 256;
 	m_resy = 144;
+	m_tileSize = 16;
+
+
+	m_windowWidth = 256;
+	m_windowHeight = 144;
 	m_screenMode = SM_WINDOW;
 	m_splashEnabled = true;
 	m_stretchToFit = false;
@@ -77,22 +80,6 @@ AppInfo::AppInfo() {
 			}
 		}
 
-		else if (valueStr.find("resolution_x") != std::string::npos) {
-			ss.str(valueStr);
-			ss >> valueStr;
-			ss >> m_resx;
-			ss.str("");
-			ss.clear();
-		}
-
-		else if (valueStr.find("resolution_y") != std::string::npos) {
-			ss.str(valueStr);
-			ss >> valueStr;
-			ss >> m_resy;
-			ss.str("");
-			ss.clear();
-		}
-
 		else if (valueStr.find("stretch_to_fit") != std::string::npos) {
 			ss.str(valueStr);
 			ss >> valueStr;
@@ -145,4 +132,8 @@ int AppInfo::centerScreenx() {
 
 int AppInfo::centerScreeny(){
 	return m_resy / 2;
+}
+
+int AppInfo::tileSize() {
+	return m_tileSize;
 }

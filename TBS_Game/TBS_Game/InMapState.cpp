@@ -90,7 +90,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 				GameUtilities::exitWithMessage("Failed to load " + exitStream.str() + " from " + filename);
 			}
 
-			m_tiles[i][j] = MapTile(terrainID, traversable, i, j);
+			m_tiles[i][j] = MapTile(terrainID, traversable, i, j, m_game.appInfo().tileSize());
 		}
 	}
 

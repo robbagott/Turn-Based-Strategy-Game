@@ -19,6 +19,7 @@ public:
 	bool stretchToFitEnabled() const;
 	int centerScreenx();
 	int centerScreeny();
+	int tileSize();
 
 private:
 	AppInfo(const AppInfo& other);
@@ -28,7 +29,10 @@ private:
 	bool m_splashEnabled;
 	bool m_stretchToFit;
 	ScreenMode m_screenMode;
-	int m_resx = 256, m_resy = 144;
+
+	//internal resolution. Should not be taken from config file
+	int m_resx, m_resy;
+	int m_tileSize;
 };
 
 #endif

@@ -4,7 +4,7 @@
 #include "GameUtilities.h"
 #include "json.h"
 
-MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) : 
+MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy, int tileSize) : 
 	m_traversable(traversable), 
 	m_gridx(posx), 
 	m_gridy(posy), 
@@ -59,7 +59,7 @@ MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy) :
 		GameUtilities::exitWithMessage("Failed to load tile texture from terrain.json with terrainID: " + terrainID);
 	}
 	m_sprite.setTexture(m_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
+	m_sprite.setTextureRect(sf::IntRect(0, 0, tileSize, tileSize));
 }
 MapTile::MapTile(const MapTile& otherTile) {
 	*this = otherTile;

@@ -9,7 +9,7 @@ class MapTile
 public:
 	enum TerrainID { TID_GRASS_1, TID_FOREST_1, TID_MOUNTAINS_1, TID_TID_ROAD_1 };
 	MapTile(); 
-	MapTile(std::string terrainID, bool traversable, int posx, int posy);
+	MapTile(std::string terrainID, bool traversable, int posx, int posy, int tileSize);
 	MapTile(const MapTile& otherTile);
 	~MapTile(); 
 	void operator=(const MapTile& otherTile);
