@@ -2,7 +2,8 @@
 #define TEXTUREMANAGER_H
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+#include "TexturePaths.h"
+#include <unordered_map>
 
 /* Haven't yet decided to make one of these and haven't thought out how to implement it.
 Regardless, it is not a critical feature in a small 2d game. 
@@ -15,17 +16,16 @@ public:
 	TextureManager();
 	~TextureManager();
 
-	sf::Texture& load(TextureID);
-	void free(TextureID);
+	sf::Texture& load(std::string);
+	void free(std::string);
 
 
 private:
 	TextureManager(const TextureManager& other);
 	void operator=(const TextureManager& other);
 
-	std::map<TextureID, sf::Texture> m_textures;
-	std::map<TextureID, int> m_referenceCounts;
-
+	std::unordered_map<std::string, sf::Texture> m_textures;
+	std::unordered_map<std::string, int> m_referenceCounts;
 	static bool m_instantiated;
 };
 

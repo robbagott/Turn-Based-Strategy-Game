@@ -105,7 +105,6 @@
     <ClCompile Include="MenuButton.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="stdAfx.cpp" />
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
@@ -125,8 +124,8 @@
     <ClInclude Include="NullGameState.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="stdAfx.h" />
-    <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="TexturePaths.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="GameUtilities.h" />
   </ItemGroup>

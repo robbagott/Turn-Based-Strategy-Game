@@ -24,29 +24,24 @@ public:
 	void requestPopState(IGameState& gamestate);
 	//Any code that has access to the game engine can ask it nicely to quit
 	void requestQuit();
-	//Any code that has access to the game engine can ask for it's window in order to draw things or perform other operations. This might be a bad idea in retrospect...
 	sf::RenderWindow* mainWindow() const;
 	AppInfo& appInfo();
+	TextureManager& textureMgr();
 
 private:
 	//Prevent copying of the object (ensure single copy exists)
 	Game(const Game&) {}
 	void operator=(const Game& other);
-	//Called when started
+	
 	void init();
-	//Called when exiting
 	void cleanup();
 	//One game loop iteration
 	void gameLoop();
-	//redirects to game state. Opportunity to decorate the call
 	void handleEvents();
-	//Same
 	void update();
-	//Same
 	void draw();
 	//Creates the game window with settings found in the Appinfo object. 
 	void initializeWindow();
-	//Actually swaps in the next requested GameState object. private for a reason.
 	void swapState();
 
 	static bool m_isInstantiated;
@@ -56,7 +51,7 @@ private:
 	IGameState* m_nextGameState;
 	sf::RenderWindow* m_mainWindow;
 	AppInfo m_appInfo;
-	TextureManager* textureMgr;
+	TextureManager m_textureMgr;
 };
 
 #endif

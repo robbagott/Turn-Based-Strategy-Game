@@ -174,3 +174,7 @@ void Game::draw() {
 AppInfo& Game::appInfo() {
 	return m_appInfo;
 }
+
+TextureManager& Game::textureMgr() {
+	return m_textureMgr;
+}
