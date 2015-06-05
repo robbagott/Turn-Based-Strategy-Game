@@ -4,7 +4,8 @@
 #include "GameUtilities.h"
 #include <iostream>
 
-MainMenu::MainMenu() : 
+MainMenu::MainMenu(Game& game) : 
+	m_game(game),
 	m_fadeInTimeInSeconds(2), 
 	m_fadeOutTimeInSeconds(4), 
 	m_selectedButton(0), 
@@ -22,10 +23,10 @@ MainMenu::MainMenu() :
 	}
 	m_blackSprite.setTexture(m_blackTexture);
 
-	m_buttons.push_back(MenuButton("New Game", "../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
-	m_buttons.push_back(MenuButton("Load Game", "../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
-	m_buttons.push_back(MenuButton("Options", "../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
-	m_buttons.push_back(MenuButton("Quit", "../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
+	m_buttons.push_back(MenuButton("../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
+	m_buttons.push_back(MenuButton("../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
+	m_buttons.push_back(MenuButton("../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
+	m_buttons.push_back(MenuButton("../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
 
 	if (!m_music.openFromFile("../Assets/Sounds/main_menu.wav")) {
 		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
@@ -48,9 +49,9 @@ void MainMenu::cleanup() {
 void MainMenu::pause() {}
 void MainMenu::resume() {}
 
-void MainMenu::handleEvents(Game& game) {
+void MainMenu::handleEvents() {
 	sf::Event currentEvent;
-	while (game.mainWindow()->pollEvent(currentEvent)) {
+	while (m_game.mainWindow()->pollEvent(currentEvent)) {
 		if (m_responsive) {
 			if (currentEvent.type == sf::Event::EventType::KeyPressed) {
 				if (currentEvent.key.code == sf::Keyboard::A || currentEvent.key.code == sf::Keyboard::Left) {
@@ -134,33 +135,33 @@ void MainMenu::handleEvents(Game& game) {
 					else if (m_selectedButton == 2) {
 					}
 					else if (m_selectedButton == 3) {
-						game.requestQuit();
+						m_game.requestQuit();
 					}
 				}
 			}
 
 		}
 		if (currentEvent.type == sf::Event::EventType::Closed) {
-			game.requestQuit();
+			m_game.requestQuit();
 		}
 	}
 }
 
-void MainMenu::update(Game& game) {
+void MainMenu::update() {
 	if (m_newGamePushed && m_fadeOutClock.getElapsedTime().asSeconds() > m_fadeOutTimeInSeconds) {
 		m_music.stop();
 
-		IGameState* newState = new InMapState(game, "../Assets/Data/level_1.json");
-		game.requestChangeState(*newState);
+		IGameState* newState = new InMapState(m_game, "../Assets/Data/level_1.json");
+		m_game.requestChangeState(*newState);
 	}
 }
 
-void MainMenu::draw(Game& game) {
-	game.mainWindow()->clear(sf::Color::Black);
+void MainMenu::draw() {
+	m_game.mainWindow()->clear(sf::Color::Black);
 
-	game.mainWindow()->draw(m_background);
+	m_game.mainWindow()->draw(m_background);
 	for (unsigned int i = 0; i < m_buttons.size(); i++) {
-		m_buttons[i].draw(*(game.mainWindow()));
+		m_buttons[i].draw(*(m_game.mainWindow()));
 	}
 
 	if (m_newGamePushed) {
@@ -168,16 +169,16 @@ void MainMenu::draw(Game& game) {
 		float percentage = (m_fadeOutTimeInSeconds - m_fadeOutClock.getElapsedTime().asSeconds()) / m_fadeOutTimeInSeconds * 100;
 		float alpha = GameUtilities::interpolate(255.0, 0.0, percentage);
 		m_blackSprite.setColor(sf::Color(255, 255, 255, alpha));
-		game.mainWindow()->draw(m_blackSprite);
+		m_game.mainWindow()->draw(m_blackSprite);
 	}
 	else if (m_fadeInClock.getElapsedTime().asSeconds() < m_fadeInTimeInSeconds) {
 		float percentage = (m_fadeInTimeInSeconds - m_fadeInClock.getElapsedTime().asSeconds())/ m_fadeInTimeInSeconds * 100;
 		float alpha =  GameUtilities::interpolate(0.0, 255.0, percentage);
 		m_blackSprite.setColor( sf::Color(255, 255, 255, alpha) );
-		game.mainWindow()->draw(m_blackSprite);
+		m_game.mainWindow()->draw(m_blackSprite);
 	}
 
-	game.mainWindow()->display();
+	m_game.mainWindow()->display();
 }
 
 void MainMenu::onNewGamePushed() {

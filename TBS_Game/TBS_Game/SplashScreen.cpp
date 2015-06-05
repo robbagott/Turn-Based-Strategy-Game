@@ -2,7 +2,7 @@
 #include "MainMenu.h"
 #include <iostream>
 
-SplashScreen::SplashScreen(std::string filename) {
+SplashScreen::SplashScreen(Game& game, std::string filename) : m_game(game) {
 	if (!m_texture.loadFromFile(filename)) {
 		std::cerr << "No splash screen texture loaded." << std::endl;
 		char x;
@@ -29,32 +29,32 @@ void SplashScreen::resume() {
 	return;
 }
 
-void SplashScreen::handleEvents(Game& game) {
+void SplashScreen::handleEvents() {
 	static sf::Time startTime = m_clock.getElapsedTime();
 
 	sf::Event currentEvent;
-	while (game.mainWindow()->pollEvent(currentEvent)) {
+	while (m_game.mainWindow()->pollEvent(currentEvent)) {
 		if (currentEvent.type == sf::Event::EventType::KeyPressed) {
-			IGameState* newState = new MainMenu();
-			game.requestChangeState(*newState);
+			IGameState* newState = new MainMenu(m_game);
+			m_game.requestChangeState(*newState);
 		}
 		if (currentEvent.type == sf::Event::EventType::Closed) {
-			game.requestQuit();
+			m_game.requestQuit();
 		}
 	}
 
 	if ((m_clock.getElapsedTime() - startTime).asSeconds() > 3) {
-		IGameState* newState = new MainMenu();
-		game.requestChangeState(*newState);
+		IGameState* newState = new MainMenu(m_game);
+		m_game.requestChangeState(*newState);
 	}
 }
 
-void SplashScreen::update(Game& game) {
+void SplashScreen::update() {
 	
 }
 
-void SplashScreen::draw(Game& game) {
-	game.mainWindow()->clear(sf::Color::Black);
-	game.mainWindow()->draw(m_sprite);
-	game.mainWindow()->display();
+void SplashScreen::draw() {
+	m_game.mainWindow()->clear(sf::Color::Black);
+	m_game.mainWindow()->draw(m_sprite);
+	m_game.mainWindow()->display();
 }

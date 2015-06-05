@@ -8,7 +8,7 @@
 class MainMenu : public IGameState
 {
 public:
-	MainMenu();
+	MainMenu(Game& game);
 	~MainMenu();
 	void init();
 	void cleanup();
@@ -16,9 +16,9 @@ public:
 	void pause();
 	void resume();
 
-	void handleEvents(Game& game);
-	void update(Game& game);
-	void draw(Game& game);
+	void handleEvents();
+	void update();
+	void draw();
 
 private:
 	//program shouldn't be calling undefined code from under my nose!
@@ -26,6 +26,7 @@ private:
 
 	void onNewGamePushed();
 
+	Game& m_game;
 	sf::Sprite m_background;
 	sf::Texture m_texture;
 	sf::Texture m_blackTexture;

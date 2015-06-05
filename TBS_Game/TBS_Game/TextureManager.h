@@ -11,8 +11,6 @@ I may come back to this if I have time later and am not too burnt out developing
 class TextureManager
 {
 public:
-	enum TextureID { TID_GRASS_1, TID_FOREST_1, TID_BLACKSCREEN, TID_MENUBG, TID_NEWGAMEBUTTON, TID_LOADGAMEBUTTON, TID_OPTIONSBUTTON, TID_QUITBUTTON };
-
 	TextureManager();
 	~TextureManager();
 

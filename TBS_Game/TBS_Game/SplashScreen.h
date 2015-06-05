@@ -7,7 +7,7 @@
 class SplashScreen : public IGameState
 {
 public:
-	SplashScreen(std::string filename);
+	SplashScreen(Game& game, std::string filename);
 	~SplashScreen();
 
 	void init();
@@ -16,9 +16,9 @@ public:
 	void pause();
 	void resume();
 	
-	void handleEvents(Game& game);
-	void update(Game& game);
-	void draw(Game& game);
+	void handleEvents();
+	void update();
+	void draw();
 
 private:
 	//Can't be instantiated without a target image filename
@@ -27,6 +27,7 @@ private:
 	SplashScreen(const SplashScreen&);
 	void operator=(const SplashScreen&);
 
+	Game& m_game;
 	sf::Sprite m_sprite;
 	sf::Texture m_texture;
 

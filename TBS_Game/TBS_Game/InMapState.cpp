@@ -5,7 +5,8 @@
 #include "GameUtilities.h"
 #include "Json.h"
 
-InMapState::InMapState(Game& game, std::string filename) {	
+InMapState::InMapState(Game& game, std::string filename) :
+	m_game(game) {	
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
 		GameUtilities::exitWithMessage("failed to load " + filename + " in InMapState constructor");
@@ -117,9 +118,9 @@ void InMapState::cleanup() {
 void InMapState::pause() {}
 void InMapState::resume() {}
 
-void InMapState::handleEvents(Game& game) {
+void InMapState::handleEvents() {
 	sf::Event event;
-	while (game.mainWindow()->pollEvent(event)) {
+	while (m_game.mainWindow()->pollEvent(event)) {
 		if (event.type == sf::Event::EventType::KeyPressed) {
 			if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
 				moveSelected(m_selectedx-1, m_selectedy);
@@ -134,21 +135,21 @@ void InMapState::handleEvents(Game& game) {
 				moveSelected(m_selectedx, m_selectedy-1);
 			}
 			else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
-				game.requestQuit();
+				m_game.requestQuit();
 			}
 
 		}
 
 		if (event.type == sf::Event::Closed) {
-			game.requestQuit();
+			m_game.requestQuit();
 		}
 	}
 }
 
-void InMapState::update(Game& game) {}
+void InMapState::update() {}
 
-void InMapState::draw(Game& game){
-	game.mainWindow()->clear(sf::Color::Black);
+void InMapState::draw(){
+	m_game.mainWindow()->clear(sf::Color::Black);
 
 	//Draw tiles
 	
@@ -156,16 +157,16 @@ void InMapState::draw(Game& game){
 	int	drawy = 0;
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			drawx = (game.appInfo().centerScreenx() - 8) + (i - m_selectedx) * 16;
-			drawy = (game.appInfo().centerScreeny() - 8) + (j - m_selectedy) * 16;
-			m_tiles[i][j].draw(game, drawx , drawy);
+			drawx = (m_game.appInfo().centerScreenx() - 8) + (i - m_selectedx) * 16;
+			drawy = (m_game.appInfo().centerScreeny() - 8) + (j - m_selectedy) * 16;
+			m_tiles[i][j].draw(m_game, drawx , drawy);
 		}
 	}
 
 	//Drar cursor overlay
-	game.mainWindow()->draw(m_cursorOverlay);
+	m_game.mainWindow()->draw(m_cursorOverlay);
 
-	game.mainWindow()->display();
+	m_game.mainWindow()->display();
 }
 
 void InMapState::moveSelected(int x, int y) {

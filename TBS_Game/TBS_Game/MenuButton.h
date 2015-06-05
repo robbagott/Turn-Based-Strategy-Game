@@ -7,10 +7,9 @@
 class MenuButton
 {
 public:
-	MenuButton(std::string name, std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width);
+	MenuButton(std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width);
 	MenuButton(const MenuButton&);
 	void operator=(const MenuButton&);
-	std::string name() const;
 	const sf::Vector2f& position() const;
 	sf::FloatRect bounds() const;
 	void select();
@@ -30,7 +29,6 @@ private:
 	sf::Sound m_sound;
 	sf::SoundBuffer m_selectSound;
 	bool m_isSelected;
-	std::string m_name;
 };
 
 #endif

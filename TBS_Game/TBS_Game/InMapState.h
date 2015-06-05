@@ -17,9 +17,9 @@ public:
 	void pause();
 	void resume();
 
-	void handleEvents(Game& game);
-	void update(Game& game);
-	void draw(Game& game);
+	void handleEvents();
+	void update();
+	void draw();
 
 private:
 	InMapState();
@@ -28,6 +28,7 @@ private:
 
 	void moveSelected(int x, int y);
 
+	Game& m_game;
 	int m_selectedx;
 	int m_selectedy;
 	std::vector<std::vector<MapTile>> m_tiles;

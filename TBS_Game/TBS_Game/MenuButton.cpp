@@ -1,8 +1,7 @@
 #include "MenuButton.h"
 #include <iostream>
 
-MenuButton::MenuButton(std::string name, std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width) {
-	m_name = name;
+MenuButton::MenuButton(std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width) {
 
 	if (!m_selectedTexture.loadFromFile(selectedFilename)) {
 		std::cout << "Could not load MenuButton with image: " << selectedFilename << std::endl;
@@ -46,7 +45,6 @@ void MenuButton::operator=(const MenuButton& other) {
 	m_selectSound = other.m_selectSound;
 	m_sound.setBuffer(m_selectSound);
 	m_isSelected = other.m_isSelected;
-	m_name = other.m_name;
 }
 
 const sf::Vector2f& MenuButton::position() const {
@@ -55,10 +53,6 @@ const sf::Vector2f& MenuButton::position() const {
 
 sf::FloatRect MenuButton::bounds() const {
 	return m_sprite.getLocalBounds();
-}
-
-std::string MenuButton::name() const {
-	return m_name;
 }
 
 void MenuButton::silentSelect() {
