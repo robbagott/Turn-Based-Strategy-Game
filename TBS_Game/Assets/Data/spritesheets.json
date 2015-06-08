@@ -1,0 +1,18 @@
+{
+	"new_game_button" : {
+		"filepath" : "../Assets/Graphics/new_game_button",
+		"frame_height" : 26,
+		"frame_width" : 94,
+		"animations" : [
+			{ "name" : "flash", "start" : 0, "end" : 4 },
+		]
+	},
+	"load_game_button" : {
+		"filepath" : "Assets/Graphics/load_game_button",
+		"frame_height" : 26,
+		"frame_width" : 94,
+		"animations" : [
+			{ "name" : "flash", "start" : 0, "end" : 4 },
+		]
+	}
+}

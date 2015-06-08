@@ -38,7 +38,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 	}
 	m_selectedx = 0;
 	m_selectedy = 0;
-	int selectedx;
+	int selectedx = 0;
 	if (root.get("startx", "").isInt()) {
 		selectedx = root.get("startx", "").asInt();
 	}

@@ -124,7 +124,7 @@
     <ClInclude Include="MenuButton.h" />
     <ClInclude Include="NullGameState.h" />
     <ClInclude Include="SplashScreen.h" />
-    <ClInclude Include="SpriteSheetcpp.h" />
+    <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="stdAfx.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="tinyxml2.h" />

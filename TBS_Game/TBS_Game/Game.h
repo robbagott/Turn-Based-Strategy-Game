@@ -52,6 +52,9 @@ private:
 	sf::RenderWindow* m_mainWindow;
 	AppInfo m_appInfo;
 	TextureManager m_textureMgr;
+
+	sf::Clock m_loopClock;
+	sf::Time m_frameTime;
 };
 
 #endif

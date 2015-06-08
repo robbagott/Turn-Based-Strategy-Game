@@ -32,6 +32,11 @@ MainMenu::MainMenu(Game& game) :
 		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
 	}
 	m_music.setLoop(true);
+
+	if (!m_newGameSoundBuffer.loadFromFile("../Assets/Sounds/new_game.wav")) {
+		std::cerr << "No new game sound found with the name " << "../Assets/Sounds/new_game.wav" << std::endl;
+	}
+	m_newGameSound.setBuffer(m_newGameSoundBuffer);
 }
 
 MainMenu::~MainMenu() {
@@ -187,4 +192,5 @@ void MainMenu::onNewGamePushed() {
 	m_newGamePushed = true;
 	m_fadeOutClock.restart();
 	m_responsive = false;
+	m_newGameSound.play();
 }

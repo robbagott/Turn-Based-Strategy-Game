@@ -18,6 +18,8 @@ Game::Game() {
 
 	m_gameStates.push(new NullGameState(*this));
 	m_nextGameState = new NullGameState(*this);
+
+	m_frameTime = sf::seconds(1.0/60.0);
 }
 
 Game::~Game() {
@@ -48,8 +50,13 @@ void Game::start() {
 
 	init();
 
+	sf::Time startTime, endTime;
 	while (!m_quitRequested) {
+		startTime = m_loopClock.getElapsedTime();
 		gameLoop();
+		endTime = m_loopClock.getElapsedTime();
+		sf::sleep(m_frameTime - (endTime - startTime));
+		std::cout << (m_loopClock.getElapsedTime() - startTime).asMilliseconds() << std::endl;
 	}
 
 	cleanup();

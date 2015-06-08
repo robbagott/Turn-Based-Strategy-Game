@@ -31,6 +31,9 @@ private:
 	sf::Texture m_texture;
 	sf::Texture m_blackTexture;
 	sf::Sprite m_blackSprite;
+
+	sf::SoundBuffer m_newGameSoundBuffer;
+	sf::Sound m_newGameSound;
 	sf::Music m_music;
 	int m_selectedButton;
 	std::vector<MenuButton> m_buttons;
