@@ -6,7 +6,7 @@
 class ICharacter : IGameActor
 {
 public:
-	
+	virtual ~ICharacter() {}
 protected:
 
 };

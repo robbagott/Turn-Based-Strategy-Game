@@ -3,16 +3,14 @@
 #include <iostream>
 
 SplashScreen::SplashScreen(Game& game, std::string filename) : m_game(game) {
-	if (!m_texture.loadFromFile(filename)) {
-		std::cerr << "No splash screen texture loaded." << std::endl;
-		char x;
-		std::cin >> x;
-		exit(1);
-	}
-	m_sprite.setTexture(m_texture);
+	m_texture = &m_game.textureMgr().load("splash_screen");
+	
+	m_sprite.setTexture(*m_texture);
 }
 
-SplashScreen::~SplashScreen() {}
+SplashScreen::~SplashScreen() {
+	m_game.textureMgr().free("splash_screen");
+}
 
 void SplashScreen::init() {
 	return;

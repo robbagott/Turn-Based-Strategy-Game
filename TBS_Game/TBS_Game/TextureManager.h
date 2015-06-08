@@ -22,7 +22,7 @@ private:
 	TextureManager(const TextureManager& other);
 	void operator=(const TextureManager& other);
 
-	std::unordered_map<std::string, sf::Texture> m_textures;
+	std::unordered_map<std::string, sf::Texture*> m_textures;
 	std::unordered_map<std::string, int> m_referenceCounts;
 	static bool m_instantiated;
 };

@@ -13,9 +13,9 @@ TextureManager::TextureManager() {
 }
 
 TextureManager::~TextureManager() {
-	std::unordered_map<std::string, sf::Texture>::iterator i = m_textures.begin();
+	std::unordered_map<std::string, sf::Texture*>::iterator i = m_textures.begin();
 	for (; i != m_textures.end(); i++) {
-		delete &(i->second);
+		delete i->second;
 	}
 }
 
@@ -28,14 +28,14 @@ sf::Texture& TextureManager::load(std::string filename) {
 		if (!newTexture->loadFromFile(fullPath)) {
 			GameUtilities::exitWithMessage("Failed to load texture with path " + fullPath);
 		}
-		m_textures[filename] = *newTexture;
+		m_textures[filename] = newTexture;
 		m_referenceCounts[filename] = 1;
 		return *newTexture;
 	}
 
 	//Just return it
 	m_referenceCounts[filename] += 1;
-	return m_textures[filename];
+	return *m_textures[filename];
 }
 
 void TextureManager::free(std::string filename) {

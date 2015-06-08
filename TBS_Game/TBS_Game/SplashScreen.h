@@ -29,7 +29,7 @@ private:
 
 	Game& m_game;
 	sf::Sprite m_sprite;
-	sf::Texture m_texture;
+	sf::Texture* m_texture;
 
 	sf::Clock m_clock;
 };
