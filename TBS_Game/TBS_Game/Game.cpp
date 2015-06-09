@@ -56,7 +56,7 @@ void Game::start() {
 		gameLoop();
 		endTime = m_loopClock.getElapsedTime();
 		sf::sleep(m_frameTime - (endTime - startTime));
-		std::cout << (m_loopClock.getElapsedTime() - startTime).asMilliseconds() << std::endl;
+		//std::cout << 1/(m_loopClock.getElapsedTime() - startTime).asSeconds() << std::endl;
 	}
 
 	cleanup();

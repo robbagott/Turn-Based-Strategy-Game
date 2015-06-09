@@ -3,29 +3,29 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include "SpriteSheet.h"
 
 class MenuButton
 {
 public:
-	MenuButton(std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width);
+	MenuButton(std::string spriteSheetName, int left, int top, int height, int width);
 	MenuButton(const MenuButton&);
 	void operator=(const MenuButton&);
-	const sf::Vector2f& position() const;
-	sf::FloatRect bounds() const;
+	sf::Vector2f position();
+	sf::FloatRect bounds();
 	void select();
 	void silentSelect();
 	void deselect();
 	bool isSelected() const;
 
+	void update();
 	void draw(sf::RenderWindow& window);
 
 private:
 	//undefined
 	MenuButton();
 
-	sf::Texture m_selectedTexture;
-	sf::Texture m_unselectedTexture;
-	sf::Sprite m_sprite;
+	SpriteSheet m_spriteSheet;
 	sf::Sound m_sound;
 	sf::SoundBuffer m_selectSound;
 	bool m_isSelected;

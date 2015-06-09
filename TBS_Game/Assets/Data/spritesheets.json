@@ -1,18 +1,86 @@
 {
 	"new_game_button" : {
-		"filepath" : "../Assets/Graphics/new_game_button",
+		"filepath" : "../Assets/Graphics/new_game_button.png",
 		"frame_height" : 26,
 		"frame_width" : 94,
 		"animations" : [
-			{ "name" : "flash", "start" : 0, "end" : 4 },
+			{ 
+				"name" : "selected", 
+				"start" : 0, 
+				"end" : 5,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				},
+			{ 
+				"name" : "unselected", 
+				"start" : 6, 
+				"end" : 11,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				}
 		]
 	},
 	"load_game_button" : {
-		"filepath" : "Assets/Graphics/load_game_button",
+		"filepath" : "../Assets/Graphics/load_game_button.png",
 		"frame_height" : 26,
 		"frame_width" : 94,
 		"animations" : [
-			{ "name" : "flash", "start" : 0, "end" : 4 },
+			{ 
+				"name" : "selected", 
+				"start" : 0, 
+				"end" : 5,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				},
+			{ 
+				"name" : "unselected", 
+				"start" : 6, 
+				"end" : 11,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				}
+		]
+	},
+	"options_button" : {
+		"filepath" : "../Assets/Graphics/options_button.png",
+		"frame_height" : 26,
+		"frame_width" : 94,
+		"animations" : [
+			{ 
+				"name" : "selected", 
+				"start" : 0, 
+				"end" : 5,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				},
+			{ 
+				"name" : "unselected", 
+				"start" : 6, 
+				"end" : 11,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				}
+		]
+	},
+	"quit_button" : {
+		"filepath" : "../Assets/Graphics/quit_button.png",
+		"frame_height" : 26,
+		"frame_width" : 94,
+		"animations" : [
+			{ 
+				"name" : "selected", 
+				"start" : 0, 
+				"end" : 5,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				},
+			{ 
+				"name" : "unselected", 
+				"start" : 6, 
+				"end" : 11,
+				"wait_ticks" : 3,
+				"loop_wait_ticks" : 120
+				}
 		]
 	}
 }

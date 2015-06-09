@@ -1,45 +1,32 @@
 #include "MenuButton.h"
+#include "GameUtilities.h"
 #include <iostream>
 
-MenuButton::MenuButton(std::string selectedFilename, std::string unselectedFilename, int left, int top, int height, int width) {
+MenuButton::MenuButton(std::string spriteSheetName, int left, int top, int height, int width) :
+	m_spriteSheet(spriteSheetName) {
 
-	if (!m_selectedTexture.loadFromFile(selectedFilename)) {
-		std::cout << "Could not load MenuButton with image: " << selectedFilename << std::endl;
-		char x;
-		std::cin >> x;
-		exit(1);
-	}
-	if (!m_unselectedTexture.loadFromFile(unselectedFilename)) {
-		std::cout << "Could not load MenuButton with image: " << unselectedFilename << std::endl;
-		char x;
-		std::cin >> x;
-		exit(1);
-	}
-	m_sprite.setTexture(m_unselectedTexture);
-	m_sprite.setPosition(left, top);
+	m_spriteSheet.setAnimation("unselected", true);
+	m_spriteSheet.sprite().setPosition(left, top);
 
 	m_isSelected = false;
 
 	if (!m_selectSound.loadFromFile("../Assets/Sounds/menu_button.wav")) {
-		std::cout << "Could not load MenuButton with sound: " << "../Assets/Sounds/menu_button.wav" << std::endl;
-		char x;
-		std::cin >> x;
-		exit(1);
+		GameUtilities::exitWithMessage("Could not load MenuButton with sound: ../Assets/Sounds/menu_button.wav");
 	}
 	m_sound.setBuffer(m_selectSound);
 }
-MenuButton::MenuButton(const MenuButton& other) {
+
+MenuButton::MenuButton(const MenuButton& other) :
+	m_spriteSheet(other.m_spriteSheet) {
 	*this = other;
 }
 void MenuButton::operator=(const MenuButton& other) {
-	m_selectedTexture = other.m_selectedTexture;
-	m_unselectedTexture = other.m_unselectedTexture;
-	m_sprite = other.m_sprite;
+	m_spriteSheet = other.m_spriteSheet;
 	if (other.m_isSelected) {
-		m_sprite.setTexture(m_selectedTexture);
+		m_spriteSheet.setAnimation("selected", true);
 	}
 	else {
-		m_sprite.setTexture(m_unselectedTexture);
+		m_spriteSheet.setAnimation("unselected", true);
 	}
 	m_sound = other.m_sound;
 	m_selectSound = other.m_selectSound;
@@ -47,31 +34,35 @@ void MenuButton::operator=(const MenuButton& other) {
 	m_isSelected = other.m_isSelected;
 }
 
-const sf::Vector2f& MenuButton::position() const {
-	return m_sprite.getPosition();
+sf::Vector2f MenuButton::position() {
+	return m_spriteSheet.sprite().getPosition();
 }
 
-sf::FloatRect MenuButton::bounds() const {
-	return m_sprite.getLocalBounds();
+sf::FloatRect MenuButton::bounds() {
+	return m_spriteSheet.sprite().getLocalBounds();
 }
 
 void MenuButton::silentSelect() {
-	m_sprite.setTexture(m_selectedTexture);
+	m_spriteSheet.setAnimation("selected", true);
 	m_isSelected = true;
 }
 
 void MenuButton::select() {
-	m_sprite.setTexture(m_selectedTexture);
+	m_spriteSheet.setAnimation("selected", true);
 	m_sound.play();
 	m_isSelected = true;
 }
 void MenuButton::deselect() {
-	m_sprite.setTexture(m_unselectedTexture);
+	m_spriteSheet.setAnimation("unselected", true);
 	m_isSelected = false;
 }
 
+void MenuButton::update() {
+	m_spriteSheet.update();
+}
+
 void MenuButton::draw(sf::RenderWindow& window) {
-	window.draw(m_sprite);
+	window.draw(m_spriteSheet.sprite());
 }
 
 bool MenuButton::isSelected() const {

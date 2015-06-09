@@ -3,13 +3,15 @@
 #include <iostream>
 
 int main()
-try {
+//try {
 	{
 		Game game;
 		game.start();
 		return 0;
 	}
-}
-catch (std::exception& e){
-	std::cerr << e.what() << std::endl;
-}
+//}
+//catch (std::exception& e){
+//	std::cerr << e.what() << std::endl;
+//	char x;
+//	std::cin >> x;
+//}

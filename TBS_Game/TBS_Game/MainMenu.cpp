@@ -13,7 +13,7 @@ MainMenu::MainMenu(Game& game) :
 	m_transitionNewGame(false),
 	m_responsive(true) {
 
-	if (!m_texture.loadFromFile("../Assets/Graphics/MainMenu.bmp")) {
+	if (!m_texture.loadFromFile("../Assets/Graphics/main_menu.png")) {
 		GameUtilities::exitWithMessage("No Main Menu Background texture loaded.");
 	}
 	m_background.setTexture(m_texture);
@@ -23,10 +23,10 @@ MainMenu::MainMenu(Game& game) :
 	}
 	m_blackSprite.setTexture(m_blackTexture);
 
-	m_buttons.push_back(MenuButton("../Assets/Graphics/new_selected.bmp", "../Assets/Graphics/new_unselected.bmp", 27, 49, 26, 94));
-	m_buttons.push_back(MenuButton("../Assets/Graphics/load_selected.bmp", "../Assets/Graphics/load_unselected.bmp", 138, 49, 26, 94));
-	m_buttons.push_back(MenuButton("../Assets/Graphics/options_selected.bmp", "../Assets/Graphics/options_unselected.bmp", 27, 88, 26, 94));
-	m_buttons.push_back(MenuButton("../Assets/Graphics/quit_selected.bmp", "../Assets/Graphics/quit_unselected.bmp", 138, 88, 26, 94));
+	m_buttons.push_back(MenuButton("new_game_button", 27, 49, 26, 94));
+	m_buttons.push_back(MenuButton("load_game_button", 138, 49, 26, 94));
+	m_buttons.push_back(MenuButton("options_button", 27, 88, 26, 94));
+	m_buttons.push_back(MenuButton("quit_button", 138, 88, 26, 94));
 
 	if (!m_music.openFromFile("../Assets/Sounds/main_menu.wav")) {
 		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
@@ -159,6 +159,10 @@ void MainMenu::update() {
 		IGameState* newState = new InMapState(m_game, "../Assets/Data/level_1.json");
 		m_game.requestChangeState(*newState);
 	}
+
+	for (int i = 0; i < m_buttons.size(); i++) {
+		m_buttons[i].update();
+	}
 }
 
 void MainMenu::draw() {
@@ -187,8 +191,6 @@ void MainMenu::draw() {
 }
 
 void MainMenu::onNewGamePushed() {
-	//play new game sound
-	m_buttons[0].select();
 	m_newGamePushed = true;
 	m_fadeOutClock.restart();
 	m_responsive = false;
