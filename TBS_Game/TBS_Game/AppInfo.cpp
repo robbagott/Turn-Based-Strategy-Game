@@ -6,9 +6,9 @@
 
 AppInfo::AppInfo() {
 	//set defaults
-	m_resx = 256;
-	m_resy = 144;
-	m_tileSize = 16;
+	m_resx = 512;
+	m_resy = 288;
+	m_tileSize = 32;
 
 
 	m_windowWidth = 256;

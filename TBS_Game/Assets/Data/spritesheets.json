@@ -1,85 +1,99 @@
 {
 	"new_game_button" : {
 		"filepath" : "../Assets/Graphics/new_game_button.png",
-		"frame_height" : 26,
-		"frame_width" : 94,
+		"frame_height" : 52,
+		"frame_width" : 188,
 		"animations" : [
 			{ 
 				"name" : "selected", 
 				"start" : 0, 
 				"end" : 5,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				},
 			{ 
 				"name" : "unselected", 
 				"start" : 6, 
 				"end" : 11,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				}
 		]
 	},
 	"load_game_button" : {
 		"filepath" : "../Assets/Graphics/load_game_button.png",
-		"frame_height" : 26,
-		"frame_width" : 94,
+		"frame_height" : 52,
+		"frame_width" : 188,
 		"animations" : [
 			{ 
 				"name" : "selected", 
 				"start" : 0, 
 				"end" : 5,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				},
 			{ 
 				"name" : "unselected", 
 				"start" : 6, 
 				"end" : 11,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				}
 		]
 	},
 	"options_button" : {
 		"filepath" : "../Assets/Graphics/options_button.png",
-		"frame_height" : 26,
-		"frame_width" : 94,
+		"frame_height" : 52,
+		"frame_width" : 188,
 		"animations" : [
 			{ 
 				"name" : "selected", 
 				"start" : 0, 
 				"end" : 5,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				},
 			{ 
 				"name" : "unselected", 
 				"start" : 6, 
 				"end" : 11,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				}
 		]
 	},
 	"quit_button" : {
 		"filepath" : "../Assets/Graphics/quit_button.png",
-		"frame_height" : 26,
-		"frame_width" : 94,
+		"frame_height" : 52,
+		"frame_width" : 188,
 		"animations" : [
 			{ 
 				"name" : "selected", 
 				"start" : 0, 
 				"end" : 5,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
 				},
 			{ 
 				"name" : "unselected", 
 				"start" : 6, 
 				"end" : 11,
-				"wait_ticks" : 3,
-				"loop_wait_ticks" : 120
+				"wait_ticks" : 1,
+				"loop_wait_ticks" : 180
+				}
+		]
+	},
+	"cursor" : {
+		"filepath" : "../Assets/Graphics/cursor.png",
+		"frame_height" : 32,
+		"frame_width" : 32,
+		"animations" : [
+			{ 
+				"name" : "toggle", 
+				"start" : 0, 
+				"end" : 1,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
 				}
 		]
 	}

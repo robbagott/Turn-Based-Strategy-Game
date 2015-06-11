@@ -5,6 +5,7 @@
 #include <SFML/Audio.hpp>
 #include "IGameState.h"
 #include "MapTile.h"
+#include "SpriteSheet.h"
 
 class InMapState : public IGameState
 {
@@ -33,8 +34,7 @@ private:
 	int m_selectedy;
 	std::vector<std::vector<MapTile>> m_tiles;
 
-	sf::Texture m_cursorTexture;
-	sf::Sprite m_cursorOverlay;
+	SpriteSheet m_cursor;
 
 	sf::Music m_music;
 };

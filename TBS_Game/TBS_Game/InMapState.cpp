@@ -6,7 +6,8 @@
 #include "Json.h"
 
 InMapState::InMapState(Game& game, std::string filename) :
-	m_game(game) {	
+	m_game(game),
+	m_cursor("cursor") {	
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
 		GameUtilities::exitWithMessage("failed to load " + filename + " in InMapState constructor");
@@ -94,12 +95,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 		}
 	}
 
-	if (!m_cursorTexture.loadFromFile("../Assets/Graphics/cursor_overlay.png")) {
-		GameUtilities::exitWithMessage("No cursor overlay texture loaded in InMapState constructor.");
-	}
-	m_cursorOverlay.setTexture(m_cursorTexture);
-	m_cursorOverlay.setColor(sf::Color(255, 255, 255, 128));
-	m_cursorOverlay.setPosition(game.appInfo().centerScreenx() - 8, game.appInfo().centerScreeny() - 8);
+	m_cursor.sprite().setPosition(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2);
 
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
 }
@@ -146,7 +142,9 @@ void InMapState::handleEvents() {
 	}
 }
 
-void InMapState::update() {}
+void InMapState::update() {
+	m_cursor.update();
+}
 
 void InMapState::draw(){
 	m_game.mainWindow()->clear(sf::Color::Black);
@@ -157,14 +155,14 @@ void InMapState::draw(){
 	int	drawy = 0;
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			drawx = (m_game.appInfo().centerScreenx() - 8) + (i - m_selectedx) * 16;
-			drawy = (m_game.appInfo().centerScreeny() - 8) + (j - m_selectedy) * 16;
+			drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (i - m_selectedx) * m_game.appInfo().tileSize();
+			drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (j - m_selectedy) * m_game.appInfo().tileSize();
 			m_tiles[i][j].draw(m_game, drawx , drawy);
 		}
 	}
 
-	//Drar cursor overlay
-	m_game.mainWindow()->draw(m_cursorOverlay);
+	//Draw cursor overlay
+	m_game.mainWindow()->draw(m_cursor.sprite());
 
 	m_game.mainWindow()->display();
 }

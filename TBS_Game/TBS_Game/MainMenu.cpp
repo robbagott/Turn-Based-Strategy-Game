@@ -18,15 +18,15 @@ MainMenu::MainMenu(Game& game) :
 	}
 	m_background.setTexture(m_texture);
 
-	if (!m_blackTexture.loadFromFile("../Assets/Graphics/BlackScreen.bmp")) {
+	if (!m_blackTexture.loadFromFile("../Assets/Graphics/black_screen.png")) {
 		GameUtilities::exitWithMessage("No Main Menu Black Screen texture loaded.");
 	}
 	m_blackSprite.setTexture(m_blackTexture);
 
-	m_buttons.push_back(MenuButton("new_game_button", 27, 49, 26, 94));
-	m_buttons.push_back(MenuButton("load_game_button", 138, 49, 26, 94));
-	m_buttons.push_back(MenuButton("options_button", 27, 88, 26, 94));
-	m_buttons.push_back(MenuButton("quit_button", 138, 88, 26, 94));
+	m_buttons.push_back(MenuButton("new_game_button", 54, 98, 52, 188));
+	m_buttons.push_back(MenuButton("load_game_button", 276, 98, 52, 188));
+	m_buttons.push_back(MenuButton("options_button", 54, 176, 52, 188));
+	m_buttons.push_back(MenuButton("quit_button", 276, 176, 52, 188));
 
 	if (!m_music.openFromFile("../Assets/Sounds/main_menu.wav")) {
 		std::cerr << "No Main Menu music found with the name " << "../Assets/Sounds/main_menu.wav" << std::endl;
