@@ -26,7 +26,6 @@ public:
 	void requestQuit();
 	sf::RenderWindow* mainWindow() const;
 	AppInfo& appInfo();
-	TextureManager& textureMgr();
 
 private:
 	//Prevent copying of the object (ensure single copy exists)
@@ -51,7 +50,6 @@ private:
 	IGameState* m_nextGameState;
 	sf::RenderWindow* m_mainWindow;
 	AppInfo m_appInfo;
-	TextureManager m_textureMgr;
 
 	sf::Clock m_loopClock;
 	sf::Time m_frameTime;

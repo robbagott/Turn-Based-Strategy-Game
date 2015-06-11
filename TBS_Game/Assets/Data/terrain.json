@@ -1,6 +1,6 @@
 {
 	"grass_1" : {
-		"texture" : "../Assets/Graphics/grass_1.bmp",
+		"sprite_sheet" : "grass_1",
 		"isGround" : true,
 		"evasionBoost" : 0,
 		"deployable" : true,
@@ -8,7 +8,7 @@
 	},
 
 	"forest_1" : {
-		"texture" : "../Assets/Graphics/forest_1.bmp",
+		"sprite_sheet" : "forest_1",
 		"isGround" : true,
 		"evasionBoost" : 15,
 		"deployable" : true,

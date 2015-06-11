@@ -2,100 +2,14 @@
 #include <fstream>
 #include "json.h"
 #include "GameUtilities.h"
+#include "TextureManager.h"
 
-SpriteSheet::SpriteSheet(std::string spriteSheetName) :
-	m_currentAnimation(0),
-	m_currentFrame(0),
-	m_spriteSheetName(spriteSheetName),
-	m_loop(true),
-	m_waiting(false),
-	m_ticks(0) {
+SpriteSheet::SpriteSheet() {
 
-	std::ifstream spriteStream("../Assets/Data/spritesheets.json", std::ios_base::binary);
-	if (!spriteStream.good()) {
-		GameUtilities::exitWithMessage("failed to load ../Assets/Data/spritesheets.json in InMapState constructor");
-	}
+}
 
-	Json::Value root = NULL;
-	spriteStream >> root;
-
-	//Find sprite sheet info.
-	const Json::Value spriteInfo = root[spriteSheetName];
-	if (spriteInfo == NULL) {
-		GameUtilities::exitWithMessage("Failed to load sprite sheet with name " + spriteSheetName);
-	}
-	
-	//Get the texture
-	std::string filepath = "";
-	if (spriteInfo.isMember("filepath") && spriteInfo["filepath"].isString()) {
-		filepath = spriteInfo.get("filepath", "").asString();
-		if ( !m_texture.loadFromFile(filepath) ) {
-			GameUtilities::exitWithMessage("failed to load texture for " + spriteSheetName);
-		}
-	}
-	else {
-		GameUtilities::exitWithMessage("failed to find texture filepath in spritesheet with name " + spriteSheetName);
-	}
-
-	//set the filepath
-	m_texturePath = filepath;
-
-	//Get the frame height
-	if (spriteInfo.isMember("frame_height") && spriteInfo["frame_height"].isInt()) {
-		m_frameHeight = spriteInfo["frame_height"].asInt();
-	}
-	else {
-		GameUtilities::exitWithMessage("failed to find frame_height in spritesheet with name " + spriteSheetName);
-	}
-
-	//Get the frame width
-	if (spriteInfo.isMember("frame_width") && spriteInfo["frame_width"].isInt()) {
-		m_frameWidth = spriteInfo["frame_width"].asInt();
-	}
-	else {
-		GameUtilities::exitWithMessage("failed to find frame_width in spritesheet with name " + spriteSheetName);
-	}
-
-	//get the animations
-	Animation toAdd;
-	Json::Value animationInfo = spriteInfo["animations"];
-	for (unsigned int i = 0; i < animationInfo.size(); i++) {
-		if (!animationInfo[i].isMember("name") || !animationInfo[i]["name"].isString()) {
-			GameUtilities::exitWithMessage("failed to load name of animation in spritesheet with name " + spriteSheetName);
-		}
-		toAdd.name = animationInfo[i]["name"].asString();
-
-		if (!animationInfo[i].isMember("start") || !animationInfo[i]["start"].isInt()) {
-			GameUtilities::exitWithMessage("failed to load start of animation in spritesheet with name " + spriteSheetName);
-		}
-		toAdd.startFrame = animationInfo[i]["start"].asInt();
-
-		if (!animationInfo[i].isMember("end") || !animationInfo[i]["end"].isInt()) {
-			GameUtilities::exitWithMessage("failed to load end of animation in spritesheet with name " + spriteSheetName);
-		}
-		toAdd.endFrame = animationInfo[i]["end"].asInt();
-
-		if (!animationInfo[i].isMember("wait_ticks") || !animationInfo[i]["wait_ticks"].isInt()) {
-			GameUtilities::exitWithMessage("failed to load wait ticks of animation in spritesheet with name " + spriteSheetName);
-		}
-		toAdd.m_waitTicks = animationInfo[i]["wait_ticks"].asInt();
-
-		if (!animationInfo[i].isMember("loop_wait_ticks") || !animationInfo[i]["loop_wait_ticks"].isInt()) {
-			GameUtilities::exitWithMessage("failed to load loop wait ticks of animation in spritesheet with name " + spriteSheetName);
-		}
-		toAdd.m_loopWaitTicks = animationInfo[i]["loop_wait_ticks"].asInt();
-
-		m_animations.push_back(toAdd);
-	}
-
-	//set the number of frames that are in texture
-	sf::Vector2u textureSize = m_texture.getSize();
-	m_framesTall = textureSize.y / m_frameHeight;
-	m_framesWide = textureSize.x / m_frameWidth;
-
-	//set sprite attributes
-	m_sprite.setTexture(m_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, 0, m_frameWidth, m_frameHeight));
+SpriteSheet::SpriteSheet(std::string spriteSheetName) {
+	setSpriteSheet(spriteSheetName);
 }
 
 SpriteSheet::SpriteSheet(const SpriteSheet& other) {
@@ -116,16 +30,14 @@ void SpriteSheet::operator=(const SpriteSheet& other) {
 	m_ticks = 0;
 
 	//sprites have a shitty shallow copy pretty much
-	if (!m_texture.loadFromFile(m_texturePath)) {
-		GameUtilities::exitWithMessage("Failed to load texture " + m_texturePath + " in SpriteSheet copy constructor");
-	}
-	m_sprite.setTexture(m_texture);
+	m_texture = TextureManager::get().load(m_texturePath);
+	m_sprite.setTexture(*m_texture);
 	m_sprite.setPosition(other.m_sprite.getPosition());
 	m_sprite.setTextureRect(other.m_sprite.getTextureRect());
 }
 
 SpriteSheet::~SpriteSheet() {
-
+	TextureManager::get().free(m_texturePath);
 } 
 
 void SpriteSheet::setAnimation(std::string animationName, bool keepPlacement) {
@@ -192,10 +104,11 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 		m_currentFrame = 0;
 		m_spriteSheetName = spriteSheetName;
 		m_ticks = 0;
+		m_waiting = false;
 
 		std::ifstream spriteStream("../Assets/Data/spritesheets.json", std::ios_base::binary);
 		if (!spriteStream.good()) {
-			GameUtilities::exitWithMessage("failed to load ../Assets/Data/spritesheets.json in InMapState constructor");
+			GameUtilities::exitWithMessage("failed to load ../Assets/Data/spritesheets.json in spriteSheet constructor");
 		}
 
 		Json::Value root = NULL;
@@ -210,16 +123,14 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 		//Get the texture
 		std::string filepath = "";
 		if (spriteInfo.isMember("filepath") && spriteInfo["filepath"].isString()) {
-			filepath = spriteInfo.get("filepath", "").asString();
-			if (!m_texture.loadFromFile(filepath)) {
-				GameUtilities::exitWithMessage("failed to load texture for " + spriteSheetName);
-			}
+			filepath = spriteInfo["filepath"].asString();
+			m_texture = TextureManager::get().load(filepath);
 		}
 		else {
 			GameUtilities::exitWithMessage("failed to find texture filepath in spritesheet with name " + spriteSheetName);
 		}
 
-		//set texture path
+		//set the filepath
 		m_texturePath = filepath;
 
 		//Get the frame height
@@ -232,7 +143,7 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 
 		//Get the frame width
 		if (spriteInfo.isMember("frame_width") && spriteInfo["frame_width"].isInt()) {
-			m_frameHeight = spriteInfo["frame_width"].asInt();
+			m_frameWidth = spriteInfo["frame_width"].asInt();
 		}
 		else {
 			GameUtilities::exitWithMessage("failed to find frame_width in spritesheet with name " + spriteSheetName);
@@ -250,22 +161,34 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 			if (!animationInfo[i].isMember("start") || !animationInfo[i]["start"].isInt()) {
 				GameUtilities::exitWithMessage("failed to load start of animation in spritesheet with name " + spriteSheetName);
 			}
-			toAdd.startFrame = animationInfo["start"].asInt();
+			toAdd.startFrame = animationInfo[i]["start"].asInt();
 
 			if (!animationInfo[i].isMember("end") || !animationInfo[i]["end"].isInt()) {
 				GameUtilities::exitWithMessage("failed to load end of animation in spritesheet with name " + spriteSheetName);
 			}
-			toAdd.endFrame = animationInfo["end"].asInt();
+			toAdd.endFrame = animationInfo[i]["end"].asInt();
+
+			if (!animationInfo[i].isMember("wait_ticks") || !animationInfo[i]["wait_ticks"].isInt()) {
+				GameUtilities::exitWithMessage("failed to load wait ticks of animation in spritesheet with name " + spriteSheetName);
+			}
+			toAdd.m_waitTicks = animationInfo[i]["wait_ticks"].asInt();
+
+			if (!animationInfo[i].isMember("loop_wait_ticks") || !animationInfo[i]["loop_wait_ticks"].isInt()) {
+				GameUtilities::exitWithMessage("failed to load loop wait ticks of animation in spritesheet with name " + spriteSheetName);
+			}
+			toAdd.m_loopWaitTicks = animationInfo[i]["loop_wait_ticks"].asInt();
 
 			m_animations.push_back(toAdd);
 		}
 
-		sf::Vector2u textureSize = m_texture.getSize();
-
+		//set the number of frames that are in texture
+		sf::Vector2u textureSize = (*m_texture).getSize();
 		m_framesTall = textureSize.y / m_frameHeight;
 		m_framesWide = textureSize.x / m_frameWidth;
 
-		m_sprite.setTexture(m_texture);
+		//set sprite attributes
+		m_sprite.setTexture(*m_texture);
+		m_sprite.setTextureRect(sf::IntRect(0, 0, m_frameWidth, m_frameHeight));
 }
 
 sf::Sprite& SpriteSheet::sprite()  {

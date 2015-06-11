@@ -19,6 +19,7 @@ public:
 		int m_loopWaitTicks;
 	};
 
+	SpriteSheet();
 	SpriteSheet(std::string spriteSheetName);
 	~SpriteSheet();
 	SpriteSheet(const SpriteSheet& other);
@@ -33,9 +34,10 @@ public:
 	sf::Sprite& sprite();
 
 private:
-	SpriteSheet();
 	
 	void setSpriteToFrame(int frameNumber);
+
+	bool m_initialized;
 
 	std::string m_spriteSheetName;
 	int m_frameHeight;
@@ -46,7 +48,8 @@ private:
 	std::vector<Animation> m_animations;
 	int m_currentAnimation;
 	int m_currentFrame;
-	sf::Texture m_texture;
+
+	sf::Texture* m_texture;
 	std::string m_texturePath;
 	sf::Sprite m_sprite;
 

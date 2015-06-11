@@ -96,5 +96,17 @@
 				"loop_wait_ticks" : 0
 				}
 		]
+	},
+	"grass_1" : {
+		"filepath" : "../Assets/Graphics/grass_1.bmp",
+		"frame_height" : 32,
+		"frame_width" : 32,
+		"animations" : []
+	},
+	"forest_1" : {
+		"filepath" : "../Assets/Graphics/forest_1.bmp",
+		"frame_height" : 32,
+		"frame_width" : 32,
+		"animations" : []
 	}
 }

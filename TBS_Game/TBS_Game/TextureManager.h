@@ -2,23 +2,23 @@
 #define TEXTUREMANAGER_H
 
 #include <SFML/Graphics.hpp>
-#include "TexturePaths.h"
 #include <unordered_map>
 
-/* Haven't yet decided to make one of these and haven't thought out how to implement it.
-Regardless, it is not a critical feature in a small 2d game. 
-I may come back to this if I have time later and am not too burnt out developing the core of the game.*/
+//TextureManager is a singleton class. It actually makes a lot of sense here.
+//We truly do want global access (Much inconvenience and tons of TextureMgr parameter passing if not) and we only
+//want one. 
 class TextureManager
 {
 public:
-	TextureManager();
+	static TextureManager& get();
 	~TextureManager();
 
-	sf::Texture& load(std::string);
+	sf::Texture* load(std::string);
 	void free(std::string);
 
 
 private:
+	TextureManager();
 	TextureManager(const TextureManager& other);
 	void operator=(const TextureManager& other);
 

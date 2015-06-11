@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Game.h"
+#include "SpriteSheet.h"
 
 class MapTile
 {
@@ -27,8 +28,7 @@ public:
 	
 private:
 
-	sf::Texture m_texture;
-	sf::Sprite m_sprite;
+	SpriteSheet m_spriteSheet;
 
 	bool m_traversable;
 	bool m_occupied;

@@ -1,47 +1,49 @@
 #include "TextureManager.h"
 #include "GameUtilities.h"
+#include <iostream>
 
-//Disallows multiple TextureManagers
-bool TextureManager::m_instantiated = false;
+TextureManager& TextureManager::get() {
+	
+	static TextureManager* instance = new TextureManager();
+	return *instance;
+}
 
 TextureManager::TextureManager() {
-	if (m_instantiated) {
-		GameUtilities::exitWithMessage("Attempted to instantiate TextureManger twice");
-	}
-	m_instantiated = true;
-
 }
 
 TextureManager::~TextureManager() {
+	//In case there are still textures allocated, delete them and report here.
 	std::unordered_map<std::string, sf::Texture*>::iterator i = m_textures.begin();
 	for (; i != m_textures.end(); i++) {
+		std::cerr << "unfreed resource " << i->first << " freed at close of program" << std::endl;
+		char x;
+		std::cin >> x;
 		delete i->second;
 	}
 }
 
-sf::Texture& TextureManager::load(std::string filename) {
+sf::Texture*TextureManager::load(std::string filename) {
 	//if the texture isn't found, allocate it and return it
 	if (m_textures.count(filename) == 0) {
 
-		std::string fullPath = "../Assets/Graphics/" + filename + ".png";
 		sf::Texture* newTexture = new sf::Texture();
-		if (!newTexture->loadFromFile(fullPath)) {
-			GameUtilities::exitWithMessage("Failed to load texture with path " + fullPath);
+		if (!newTexture->loadFromFile(filename)) {
+			//GameUtilities::exitWithMessage("Failed to load texture with path " + fileName);
+			newTexture->loadFromFile("../Assets/Graphics/null_texture.png");
 		}
 		m_textures[filename] = newTexture;
 		m_referenceCounts[filename] = 1;
-		return *newTexture;
+		return newTexture;
 	}
 
 	//Just return it
 	m_referenceCounts[filename] += 1;
-	return *m_textures[filename];
+	return m_textures[filename];
 }
 
 void TextureManager::free(std::string filename) {
 	if (m_textures.count(filename) == 0) {
-		std::string fullPath = "../Assets/Graphics/" + filename + ".png";
-		GameUtilities::exitWithMessage("Attempt to deallocate unloaded texture with path "+ fullPath);
+		GameUtilities::exitWithMessage("Attempt to deallocate unloaded texture with path "+ filename);
 	}
 
 	m_referenceCounts[filename] -= 1;

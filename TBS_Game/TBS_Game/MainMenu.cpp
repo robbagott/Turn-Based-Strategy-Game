@@ -13,15 +13,11 @@ MainMenu::MainMenu(Game& game) :
 	m_transitionNewGame(false),
 	m_responsive(true) {
 
-	if (!m_texture.loadFromFile("../Assets/Graphics/main_menu.png")) {
-		GameUtilities::exitWithMessage("No Main Menu Background texture loaded.");
-	}
-	m_background.setTexture(m_texture);
+	m_texture = TextureManager::get().load("../Assets/Graphics/main_menu.png");
+	m_background.setTexture(*m_texture);
 
-	if (!m_blackTexture.loadFromFile("../Assets/Graphics/black_screen.png")) {
-		GameUtilities::exitWithMessage("No Main Menu Black Screen texture loaded.");
-	}
-	m_blackSprite.setTexture(m_blackTexture);
+	m_blackTexture = TextureManager::get().load("../Assets/Graphics/black_screen.png");
+	m_blackSprite.setTexture(*m_blackTexture);
 
 	m_buttons.push_back(MenuButton("new_game_button", 54, 98, 52, 188));
 	m_buttons.push_back(MenuButton("load_game_button", 276, 98, 52, 188));
@@ -40,6 +36,8 @@ MainMenu::MainMenu(Game& game) :
 }
 
 MainMenu::~MainMenu() {
+	TextureManager::get().free("../Assets/Graphics/main_menu.png");
+	TextureManager::get().free("../Assets/Graphics/black_screen.png");
 }
 
 void MainMenu::init() {

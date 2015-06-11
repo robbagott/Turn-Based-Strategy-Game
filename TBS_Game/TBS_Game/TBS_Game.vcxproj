@@ -107,7 +107,6 @@
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="stdAfx.cpp" />
     <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppInfo.h" />
@@ -127,7 +126,6 @@
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="stdAfx.h" />
     <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="GameUtilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

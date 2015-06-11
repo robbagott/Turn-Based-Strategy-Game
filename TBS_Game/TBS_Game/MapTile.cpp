@@ -4,7 +4,7 @@
 #include "GameUtilities.h"
 #include "json.h"
 
-MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy, int tileSize) : 
+MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy, int tileSize) :
 	m_traversable(traversable), 
 	m_gridx(posx), 
 	m_gridy(posy), 
@@ -16,54 +16,48 @@ MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy, in
 	}
 	Json::Value root = NULL;
 	terrainStream >> root;
-	if (root == NULL) {
-		GameUtilities::exitWithMessage("Failed to load root from terrain.json with terrainID: " + terrainID);
-	}
-
 	Json::Value terrain = root[terrainID];
 
-	if (terrain.get("isGround", "").isBool()) {
-		m_ground = terrain.get("isGround", "").asBool();
+	if (terrain.isMember("isGround") && terrain["isGround"].isBool()) {
+		m_ground = terrain["isGround"].asBool();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load isGround from terrain.json with terrainID: " + terrainID);
 	}
 
-	if (terrain.get("moveCost", "").isInt()) {
-		m_moveCost = terrain.get("moveCost", "").asInt();
+	if (terrain.isMember("moveCost") && terrain["moveCost"].isInt()) {
+		m_moveCost = terrain["moveCost"].asInt();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load moveCost from terrain.json with terrainID: " + terrainID);
 	}
 
-	if (terrain.get("evasionBoost", "").isInt()) {
-		m_evasionBoost = terrain.get("evasionBoost", "").asInt();
+	if (terrain.isMember("evasionBoost") && terrain["evasionBoost"].isInt()) {
+		m_evasionBoost = terrain["evasionBoost"].asInt();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load evasionBoost from terrain.json with terrainID: " + terrainID);
 	}
 
-	if (terrain.get("deployable", "").isBool()) {
-		m_deployable = terrain.get("deployable", "").asBool();
+	if (terrain.isMember("deployable") && terrain["deployable"].isBool()) {
+		m_deployable = terrain["deployable"].asBool();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load deployable from terrain.json with terrainID: " + terrainID);
 	}
 
-	if (terrain.get("texture", "").isString()) {
-		if (!m_texture.loadFromFile( terrain.get("texture", "").asString()) ) {
-			GameUtilities::exitWithMessage("Failed to load tile texture in " + terrainID);
-		}
+	if (terrain.isMember("sprite_sheet") && terrain["sprite_sheet"].isString()) {
+		m_spriteSheet.setSpriteSheet(terrain["sprite_sheet"].asString());
 	}
 	else {
-		GameUtilities::exitWithMessage("Failed to load tile texture from terrain.json with terrainID: " + terrainID);
+		GameUtilities::exitWithMessage("Failed to load sprite_sheet from terrain.json with terrainID: " + terrainID);
 	}
-	m_sprite.setTexture(m_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, 0, tileSize, tileSize));
 }
-MapTile::MapTile(const MapTile& otherTile) {
-	*this = otherTile;
+
+MapTile::MapTile(const MapTile& other) {
+	*this = other;
 }
+
 MapTile::MapTile() :
 	m_traversable (false),
 	m_gridx(0),
@@ -74,11 +68,11 @@ MapTile::MapTile() :
 	m_moveCost(0),
 	m_evasionBoost(0) 
 {}
+
 MapTile::~MapTile() {}
+
 void MapTile::operator=(const MapTile& otherTile) {
-	m_texture = otherTile.m_texture;
-	m_sprite = otherTile.m_sprite;
-	m_sprite.setTexture(m_texture);
+	m_spriteSheet = otherTile.m_spriteSheet;
 
 	m_traversable = otherTile.m_traversable;
 	m_occupied = otherTile.m_occupied;
@@ -91,31 +85,40 @@ void MapTile::operator=(const MapTile& otherTile) {
 	m_gridx = otherTile.m_gridx;
 	m_gridy = otherTile.m_gridy;
 }
+
 void MapTile::draw(Game& game, int xpos, int ypos) {
-	m_sprite.setPosition(xpos, ypos);
-	game.mainWindow()->draw(m_sprite);
+	m_spriteSheet.sprite().setPosition(xpos, ypos);
+	game.mainWindow()->draw(m_spriteSheet.sprite());
 }
+
 int MapTile::moveCost() const {
 	return m_moveCost;
 }
+
 bool MapTile::occupied() const {
 	return m_occupied;
 }
+
 bool MapTile::traversable() const {
 	return m_traversable;
 }
+
 bool MapTile::ground() const {
 	return m_ground;
 }
+
 int MapTile::gridx() const {
 	return m_gridx;
 }
+
 int MapTile::gridy() const {
 	return m_gridy;
 }
+
 bool MapTile::deployable() const {
 	return m_deployable;
 }
+
 int MapTile::evasionBoost() const {
 	return m_evasionBoost;
 }

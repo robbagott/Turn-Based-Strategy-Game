@@ -3,13 +3,13 @@
 #include <iostream>
 
 SplashScreen::SplashScreen(Game& game, std::string filename) : m_game(game) {
-	m_texture = &m_game.textureMgr().load("splash_screen");
+	m_texture = TextureManager::get().load("../Assets/Graphics/splash_screen.png");
 	
 	m_sprite.setTexture(*m_texture);
 }
 
 SplashScreen::~SplashScreen() {
-	m_game.textureMgr().free("splash_screen");
+	TextureManager::get().free("../Assets/Graphics/splash_screen.png");
 }
 
 void SplashScreen::init() {

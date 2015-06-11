@@ -8,6 +8,7 @@
 InMapState::InMapState(Game& game, std::string filename) :
 	m_game(game),
 	m_cursor("cursor") {	
+
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
 		GameUtilities::exitWithMessage("failed to load " + filename + " in InMapState constructor");
@@ -17,16 +18,15 @@ InMapState::InMapState(Game& game, std::string filename) :
 
 	//Collect basic map information from map json file
 	int tilesWide = 0;
-	if (root.get("width", "").isInt()) {
-		tilesWide = root.get("width", "").asInt();
+	int tilesHigh = 0;
+	if (root.isMember("width") && root["width"].isInt()) {
+		tilesWide = root["width"].asInt();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load width from " + filename);
 	}
-
-	int tilesHigh = 0;
-	if (root.get("height", "").isInt()) {
-		tilesHigh = root.get("height", "").asInt();
+	if (root.isMember("height") && root["height"].isInt()) {
+		tilesHigh = root["height"].asInt();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load height from " + filename);
@@ -37,18 +37,21 @@ InMapState::InMapState(Game& game, std::string filename) :
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		m_tiles[i].resize(tilesHigh);
 	}
+
+	//Get starting selected square. Use temp selected squares used so we can 
+	//error check with call to moveSelected(); Not an error
 	m_selectedx = 0;
 	m_selectedy = 0;
 	int selectedx = 0;
-	if (root.get("startx", "").isInt()) {
-		selectedx = root.get("startx", "").asInt();
+	int selectedy = 0;
+	if (root.isMember("startx") && root["startx"].isInt()) {
+		selectedx = root["startx"].asInt();
 	}
 	else {
 		GameUtilities::exitWithMessage("Failed to load startx from " + filename);
 	}
 
-	int selectedy;
-	if (root.get("starty", "").isInt()) {
+	if (root.isMember("starty") && root["starty"].isInt()) {
 		selectedy = root.get("starty", "").asInt();
 	}
 	else {
@@ -68,16 +71,16 @@ InMapState::InMapState(Game& game, std::string filename) :
 			tileStream << i << " " << j;
 			tileRoot = root[tileStream.str()];
 			if (tileRoot != NULL) {
-				if (tileRoot.get("terrainID", "").isString()) {
-					terrainID = tileRoot.get("terrainID", "").asString();
+				if (tileRoot.isMember("terrainID") && tileRoot["terrainID"].isString()) {
+					terrainID = tileRoot["terrainID"].asString();
 				}
 				else {
 					std::stringstream exitStream;
 					exitStream << i << " " << j;
 					GameUtilities::exitWithMessage("Failed to load terrainID for " + exitStream.str() + " from " + filename);
 				}
-				if (tileRoot.get("traversable", "").isBool()) {
-					traversable = tileRoot.get("traversable", "").asBool();
+				if (tileRoot.isMember("traversable") && tileRoot["traversable"].isBool()) {
+					traversable = tileRoot["traversable"].asBool();
 				}
 				else {
 					std::stringstream exitStream;
@@ -95,8 +98,10 @@ InMapState::InMapState(Game& game, std::string filename) :
 		}
 	}
 
+	//initialize cursor to center of screen
 	m_cursor.sprite().setPosition(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2);
 
+	//initialize music. Doesn't start playing yet
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
 }
 
