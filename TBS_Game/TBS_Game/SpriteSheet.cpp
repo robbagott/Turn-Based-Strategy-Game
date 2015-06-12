@@ -25,11 +25,14 @@ void SpriteSheet::operator=(const SpriteSheet& other) {
 	m_framesTall = other.m_framesTall;
 	m_framesWide = other.m_framesWide;
 	m_spriteSheetName = other.m_spriteSheetName;
-	m_texturePath = other.m_texturePath;
 	m_loop = other.m_loop;
 	m_ticks = 0;
 
+	//Release the current texture
+	TextureManager::get().free(m_texturePath);
+
 	//sprites have a shitty shallow copy pretty much
+	m_texturePath = other.m_texturePath;
 	m_texture = TextureManager::get().load(m_texturePath);
 	m_sprite.setTexture(*m_texture);
 	m_sprite.setPosition(other.m_sprite.getPosition());
@@ -40,7 +43,7 @@ SpriteSheet::~SpriteSheet() {
 	TextureManager::get().free(m_texturePath);
 } 
 
-void SpriteSheet::setAnimation(std::string animationName, bool keepPlacement) {
+void SpriteSheet::setAnimation(const std::string& animationName, bool keepPlacement) {
 	//Find new animation
 	bool found = false;
 	for (unsigned int i = 0; i < m_animations.size(); i++) {
@@ -202,4 +205,11 @@ void SpriteSheet::setSpriteToFrame(int frameNumber) {
 	int row = (m_currentFrame + m_animations[m_currentAnimation].startFrame) / m_framesWide;
 	int col = (m_currentFrame + m_animations[m_currentAnimation].startFrame) % m_framesWide;
 	m_sprite.setTextureRect(sf::IntRect(col * m_frameWidth, row * m_frameHeight, m_frameWidth, m_frameHeight));
+}
+
+sf::Vector2f SpriteSheet::getPosition() const{
+	return m_sprite.getPosition();
+}
+void SpriteSheet::setPosition(sf::Vector2f pos) {
+	m_sprite.setPosition(pos);
 }

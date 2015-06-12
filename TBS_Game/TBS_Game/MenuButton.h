@@ -10,6 +10,7 @@ class MenuButton
 public:
 	MenuButton(std::string spriteSheetName, int left, int top, int height, int width);
 	MenuButton(const MenuButton&);
+	~MenuButton();
 	void operator=(const MenuButton&);
 	sf::Vector2f position();
 	sf::FloatRect bounds();

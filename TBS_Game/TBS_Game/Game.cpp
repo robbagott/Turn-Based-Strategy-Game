@@ -29,6 +29,8 @@ Game::~Game() {
 		m_gameStates.pop();
 	}
 	delete m_nextGameState;
+
+	TextureManager::get().freeAll();
 }
 
 void Game::init() {
@@ -56,7 +58,7 @@ void Game::start() {
 		gameLoop();
 		endTime = m_loopClock.getElapsedTime();
 		sf::sleep(m_frameTime - (endTime - startTime));
-		std::cout << 1/(m_loopClock.getElapsedTime() - startTime).asSeconds() << std::endl;
+		//std::cout << 1/(m_loopClock.getElapsedTime() - startTime).asSeconds() << std::endl;
 	}
 
 	cleanup();

@@ -25,11 +25,14 @@ public:
 	SpriteSheet(const SpriteSheet& other);
 	void operator=(const SpriteSheet& other);
 
-	void setAnimation(const std::string animationName, bool keepPlacement);
+	void setAnimation(const std::string& animationName, bool keepPlacement);
 	void resetAnimation();
 	void update();
 
 	void setSpriteSheet(std::string spriteSheetName);
+
+	sf::Vector2f getPosition() const;
+	void setPosition(sf::Vector2f pos);
 
 	sf::Sprite& sprite();
 

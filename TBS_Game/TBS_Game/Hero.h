@@ -3,22 +3,27 @@
 
 #include "ICharacter.h"
 #include <SFML/Graphics.hpp>
+#include "SpriteSheet.h"
 
 class Hero : public ICharacter
 {
 public:
-	Hero();
+	Hero(std::string heroName);
 	Hero(const Hero& other);
 	~Hero();
 	void operator=(const Hero& other);
 
-	void handleEvent(const IGameState& gameState, sf::Event event);
+	void handleEvent(IGameState& gameState, sf::Event event);
 	void update(IGameState& gameState);
 	void draw(IGameState& gameState, sf::RenderWindow& window);
 
+	sf::Vector2f getPosition() const;
+	void setPosition(const sf::Vector2f&);
+
 private:
 	
-	sf::Sprite m_sprite;
+	SpriteSheet m_spriteSheet;
+	std::string m_name;
 };
 
 #endif

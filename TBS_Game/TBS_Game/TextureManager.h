@@ -15,7 +15,7 @@ public:
 
 	sf::Texture* load(std::string);
 	void free(std::string);
-
+	void freeAll();
 
 private:
 	TextureManager();

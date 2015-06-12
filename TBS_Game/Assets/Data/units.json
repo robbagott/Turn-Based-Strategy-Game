@@ -1,0 +1,11 @@
+{
+	"x19" : {
+		"health" : 100,
+		"strength" : 15,
+		"armor" : 7,
+		"intelligence" : 2,
+		"evasion" : 8,
+		"energy" : 10,
+		"move_points" : 6 
+	}
+}

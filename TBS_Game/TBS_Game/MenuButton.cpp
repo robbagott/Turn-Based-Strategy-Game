@@ -34,6 +34,9 @@ void MenuButton::operator=(const MenuButton& other) {
 	m_isSelected = other.m_isSelected;
 }
 
+MenuButton::~MenuButton() {
+}
+
 sf::Vector2f MenuButton::position() {
 	return m_spriteSheet.sprite().getPosition();
 }

@@ -108,5 +108,19 @@
 		"frame_height" : 32,
 		"frame_width" : 32,
 		"animations" : []
+	},
+	"x19" : {
+		"filepath" : "../Assets/Graphics/x19.png",
+		"frame_height" : 32,
+		"frame_width" : 32,
+		"animations" : [
+			{
+				"name" : "selected", 
+				"start" : 0, 
+				"end" : 1,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				}
+		]
 	}
 }

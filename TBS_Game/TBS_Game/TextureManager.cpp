@@ -11,15 +11,9 @@ TextureManager& TextureManager::get() {
 TextureManager::TextureManager() {
 }
 
+//This never gets called due to the nature of a singleton
 TextureManager::~TextureManager() {
-	//In case there are still textures allocated, delete them and report here.
-	std::unordered_map<std::string, sf::Texture*>::iterator i = m_textures.begin();
-	for (; i != m_textures.end(); i++) {
-		std::cerr << "unfreed resource " << i->first << " freed at close of program" << std::endl;
-		char x;
-		std::cin >> x;
-		delete i->second;
-	}
+	
 }
 
 sf::Texture*TextureManager::load(std::string filename) {
@@ -43,11 +37,22 @@ sf::Texture*TextureManager::load(std::string filename) {
 
 void TextureManager::free(std::string filename) {
 	if (m_textures.count(filename) == 0) {
-		GameUtilities::exitWithMessage("Attempt to deallocate unloaded texture with path "+ filename);
+		std::cerr << "Attempted to deallocate unloaded texture: " + filename << std::endl;
 	}
 
 	m_referenceCounts[filename] -= 1;
 	if (m_referenceCounts[filename] == 0) {
 		m_textures.erase(filename);
+	}
+}
+
+//call on end of program
+void TextureManager::freeAll() {
+	std::unordered_map<std::string, sf::Texture*>::iterator i = m_textures.begin();
+	for (; i != m_textures.end(); i++) {
+		std::cerr << "unfreed resource " << i->first << " freed at close of program" << std::endl;
+		char x;
+		std::cin >> x;
+		delete i->second;
 	}
 }

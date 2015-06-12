@@ -4,6 +4,7 @@
 #include <iostream>
 #include "GameUtilities.h"
 #include "Json.h"
+#include "hero.h"
 
 InMapState::InMapState(Game& game, std::string filename) :
 	m_game(game),
@@ -103,9 +104,17 @@ InMapState::InMapState(Game& game, std::string filename) :
 
 	//initialize music. Doesn't start playing yet
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
+
+	//*****************TEMPORARY*****************
+	ICharacter* hero = new Hero("x19");
+	hero->setPosition(sf::Vector2f(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2));
+	m_characters.push_back(hero);
 }
 
 InMapState::~InMapState() {
+	for (unsigned int i = 0; i < m_characters.size(); i++) {
+		delete m_characters[i];
+	}
 }
 
 void InMapState::init() {
@@ -149,6 +158,10 @@ void InMapState::handleEvents() {
 
 void InMapState::update() {
 	m_cursor.update();
+
+	for (unsigned int i = 0; i < m_characters.size(); i++) {
+		m_characters[i]->update(*this);
+	}
 }
 
 void InMapState::draw(){
@@ -168,6 +181,10 @@ void InMapState::draw(){
 
 	//Draw cursor overlay
 	m_game.mainWindow()->draw(m_cursor.sprite());
+
+	for (unsigned int i = 0; i < m_characters.size(); i++) {
+		m_characters[i]->draw(*this, *m_game.mainWindow());
+	}
 
 	m_game.mainWindow()->display();
 }

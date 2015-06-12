@@ -6,6 +6,7 @@
 #include "IGameState.h"
 #include "MapTile.h"
 #include "SpriteSheet.h"
+#include "ICharacter.h"
 
 class InMapState : public IGameState
 {
@@ -33,7 +34,7 @@ private:
 	int m_selectedx;
 	int m_selectedy;
 	std::vector<std::vector<MapTile>> m_tiles;
-
+	std::vector<ICharacter*> m_characters;
 	SpriteSheet m_cursor;
 
 	sf::Music m_music;
