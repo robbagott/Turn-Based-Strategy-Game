@@ -62,6 +62,9 @@ Hero::Hero(std::string heroName) :
 		GameUtilities::exitWithMessage("failed to find " + toFind + " in Hero constructor.");
 	}
 	m_movePoints = heroRoot[toFind].asInt();
+
+	m_gridx = 0;
+	m_gridy = 0;
 }
 Hero::Hero(const Hero& other) {
 
@@ -90,4 +93,12 @@ sf::Vector2f Hero::getPosition() const {
 
 void Hero::setPosition(const sf::Vector2f& pos) {
 	m_spriteSheet.setPosition(pos);
+}
+
+sf::Vector2u Hero::getGridPos() {
+	return sf::Vector2u(m_gridx, m_gridy);
+}
+void Hero::setGridPos(sf::Vector2u gridPos) {
+	m_gridx = gridPos.x;
+	m_gridy = gridPos.y;
 }

@@ -60,43 +60,42 @@ InMapState::InMapState(Game& game, std::string filename) :
 	}
 
 	moveSelected(selectedx, selectedy);
-
+	if (!root.isMember("tiles")) {
+		GameUtilities::exitWithMessage("failed to find tiles in level with filename " + filename);
+	}
 	//Load the tiles into the grid
-	Json::Value tileRoot = NULL;
+	Json::Value tileRoot = root["tiles"];
+	int x = 0, y = 0;
 	std::string terrainID;
-	std::stringstream tileStream;
 	bool traversable = true;
-	for (unsigned int i = 0; i < m_tiles.size(); i++) {
-		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			tileStream.str("");
-			tileStream << i << " " << j;
-			tileRoot = root[tileStream.str()];
-			if (tileRoot != NULL) {
-				if (tileRoot.isMember("terrainID") && tileRoot["terrainID"].isString()) {
-					terrainID = tileRoot["terrainID"].asString();
-				}
-				else {
-					std::stringstream exitStream;
-					exitStream << i << " " << j;
-					GameUtilities::exitWithMessage("Failed to load terrainID for " + exitStream.str() + " from " + filename);
-				}
-				if (tileRoot.isMember("traversable") && tileRoot["traversable"].isBool()) {
-					traversable = tileRoot["traversable"].asBool();
-				}
-				else {
-					std::stringstream exitStream;
-					exitStream << i << " " << j;
-					GameUtilities::exitWithMessage("Failed to load traversable for " + exitStream.str() + " from " + filename);
-				}
-			}
-			else {
-				std::stringstream exitStream;
-				exitStream << i << " " << j;
-				GameUtilities::exitWithMessage("Failed to load " + exitStream.str() + " from " + filename);
-			}
+	for (unsigned int i = 0; i < (tilesHigh)*(tilesWide); ++i) {
+		if (tileRoot[i] != NULL) {
+			if (!tileRoot[i].isMember("x") || !tileRoot[i]["x"].isInt()) {
+				GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
 
-			m_tiles[i][j] = MapTile(terrainID, traversable, i, j, m_game.appInfo().tileSize());
+			}
+			x = tileRoot[i]["x"].asInt();
+			if (!tileRoot[i].isMember("y") || !tileRoot[i]["y"].isInt()) {
+				GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
+
+			}
+			y = tileRoot[i]["y"].asInt();
+			if (!tileRoot[i].isMember("terrainID") || !tileRoot[i]["terrainID"].isString()) {
+				GameUtilities::exitWithMessage("Failed to load terrainID for tiles from " + filename);
+
+			}
+			terrainID = tileRoot[i]["terrainID"].asString();
+			if (!tileRoot[i].isMember("traversable") || !tileRoot[i]["traversable"].isBool()) {
+				GameUtilities::exitWithMessage("Failed to load traversable for tiles from " + filename);
+
+			}
+			traversable = tileRoot[i]["traversable"].asBool();
 		}
+		else {
+			GameUtilities::exitWithMessage("Failed to load tiles from " + filename);
+		}
+
+		m_tiles[x][y] = MapTile(terrainID, traversable, x, y, m_game.appInfo().tileSize());
 	}
 
 	//initialize cursor to center of screen
@@ -182,6 +181,7 @@ void InMapState::draw(){
 	//Draw cursor overlay
 	m_game.mainWindow()->draw(m_cursor.sprite());
 
+	//Draw characters
 	for (unsigned int i = 0; i < m_characters.size(); i++) {
 		m_characters[i]->draw(*this, *m_game.mainWindow());
 	}

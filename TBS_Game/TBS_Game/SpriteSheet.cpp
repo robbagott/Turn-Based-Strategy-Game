@@ -154,6 +154,9 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 
 		//get the animations
 		Animation toAdd;
+		if (!spriteInfo.isMember("animations")) {
+			GameUtilities::exitWithMessage("failed to find animations in spritesheet with name " + spriteSheetName);
+		}
 		Json::Value animationInfo = spriteInfo["animations"];
 		for (unsigned int i = 0; i < animationInfo.size(); i++) {
 			if (!animationInfo[i].isMember("name") || !animationInfo[i]["name"].isString()) {
