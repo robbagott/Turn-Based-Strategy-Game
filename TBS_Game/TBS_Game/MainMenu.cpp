@@ -158,7 +158,7 @@ void MainMenu::update() {
 		m_game.requestChangeState(*newState);
 	}
 
-	for (int i = 0; i < m_buttons.size(); i++) {
+	for (unsigned int i = 0; i < m_buttons.size(); i++) {
 		m_buttons[i].update();
 	}
 }

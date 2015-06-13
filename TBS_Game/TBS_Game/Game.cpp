@@ -19,7 +19,7 @@ Game::Game() {
 	m_gameStates.push(new NullGameState(*this));
 	m_nextGameState = new NullGameState(*this);
 
-	m_frameTime = sf::seconds(1.0/60.0);
+	m_frameTime = sf::seconds(1.0f/60.0f);
 }
 
 Game::~Game() {

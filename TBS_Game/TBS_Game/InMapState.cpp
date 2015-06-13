@@ -8,7 +8,8 @@
 
 InMapState::InMapState(Game& game, std::string filename) :
 	m_game(game),
-	m_cursor("cursor") {	
+	m_cursor("cursor"),
+	m_characterIsSelected(false) {	
 
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
@@ -41,8 +42,8 @@ InMapState::InMapState(Game& game, std::string filename) :
 
 	//Get starting selected square. Use temp selected squares used so we can 
 	//error check with call to moveSelected(); Not an error
-	m_selectedx = 0;
-	m_selectedy = 0;
+	m_selected.x = 0;
+	m_selected.y = 0;
 	int selectedx = 0;
 	int selectedy = 0;
 	if (root.isMember("startx") && root["startx"].isInt()) {
@@ -68,7 +69,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 	int x = 0, y = 0;
 	std::string terrainID;
 	bool traversable = true;
-	for (unsigned int i = 0; i < (tilesHigh)*(tilesWide); ++i) {
+	for (int i = 0; i < (tilesHigh)*(tilesWide); ++i) {
 		if (tileRoot[i] != NULL) {
 			if (!tileRoot[i].isMember("x") || !tileRoot[i]["x"].isInt()) {
 				GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
@@ -98,15 +99,18 @@ InMapState::InMapState(Game& game, std::string filename) :
 		m_tiles[x][y] = MapTile(terrainID, traversable, x, y, m_game.appInfo().tileSize());
 	}
 
-	//initialize cursor to center of screen
-	m_cursor.sprite().setPosition(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2);
+	//initialize cursor
+	m_cursor.sprite().setPosition((float)(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2), (float)(game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2));
+	m_cursor.setAnimation("white", true);
+	//Initialize focal point to center of map
+	m_focalTile = sf::Vector2i(tilesWide/2-1, tilesHigh/2-1);
 
 	//initialize music. Doesn't start playing yet
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
 
 	//*****************TEMPORARY*****************
 	ICharacter* hero = new Hero("x19");
-	hero->setPosition(sf::Vector2f(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2));
+	hero->setPosition( game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2);
 	m_characters.push_back(hero);
 }
 
@@ -130,23 +134,53 @@ void InMapState::resume() {}
 void InMapState::handleEvents() {
 	sf::Event event;
 	while (m_game.mainWindow()->pollEvent(event)) {
-		if (event.type == sf::Event::EventType::KeyPressed) {
-			if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-				moveSelected(m_selectedx-1, m_selectedy);
-			}
-			else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-				moveSelected(m_selectedx+1, m_selectedy);
-			}
-			else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-				moveSelected(m_selectedx, m_selectedy+1);
-			}
-			else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-				moveSelected(m_selectedx, m_selectedy-1);
-			}
-			else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
-				m_game.requestQuit();
-			}
 
+		if (m_characterIsSelected) {
+			if (event.type == sf::Event::EventType::KeyPressed) {
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+					moveSelected(m_selected.x - 1, m_selected.y);
+				}
+				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+					moveSelected(m_selected.x + 1, m_selected.y);
+				}
+				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+					moveSelected(m_selected.x, m_selected.y + 1);
+				}
+				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+					moveSelected(m_selected.x, m_selected.y - 1);
+				}
+				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
+					m_characterIsSelected = false;
+					m_cursor.setAnimation("white", true);
+				}
+				else if (event.key.code == sf::Keyboard::Escape) {
+					m_game.requestQuit();
+				}
+			}
+		}
+
+		else {
+			if (event.type == sf::Event::EventType::KeyPressed) {
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+					moveSelected(m_selected.x - 1, m_selected.y);
+				}
+				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+					moveSelected(m_selected.x + 1, m_selected.y);
+				}
+				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+					moveSelected(m_selected.x, m_selected.y + 1);
+				}
+				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+					moveSelected(m_selected.x, m_selected.y - 1);
+				}
+				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+					onSelectPress();
+				}
+				else if (event.key.code == sf::Keyboard::Escape) {
+					m_game.requestQuit();
+				}
+			}
 		}
 
 		if (event.type == sf::Event::Closed) {
@@ -163,37 +197,69 @@ void InMapState::update() {
 	}
 }
 
-void InMapState::draw(){
+void InMapState::draw() {
 	m_game.mainWindow()->clear(sf::Color::Black);
 
 	//Draw tiles
-	
 	int drawx = 0;
 	int	drawy = 0;
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (i - m_selectedx) * m_game.appInfo().tileSize();
-			drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (j - m_selectedy) * m_game.appInfo().tileSize();
+			drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (i - m_focalTile.x) * m_game.appInfo().tileSize();
+			drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (j - m_focalTile.y) * m_game.appInfo().tileSize();
 			m_tiles[i][j].draw(m_game, drawx , drawy);
 		}
 	}
 
 	//Draw cursor overlay
+	drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_selected.x - m_focalTile.x) * m_game.appInfo().tileSize();
+	drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_selected.y - m_focalTile.y) * m_game.appInfo().tileSize();
+	m_cursor.sprite().setPosition((float)drawx, (float)drawy);
 	m_game.mainWindow()->draw(m_cursor.sprite());
 
 	//Draw characters
 	for (unsigned int i = 0; i < m_characters.size(); i++) {
+		sf::Vector2i gridPos = m_characters[i]->gridPos();
+		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (gridPos.x - m_focalTile.x) * m_game.appInfo().tileSize();
+		drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (gridPos.y - m_focalTile.y) * m_game.appInfo().tileSize();
+		m_characters[i]->setPosition(drawx, drawy);
 		m_characters[i]->draw(*this, *m_game.mainWindow());
 	}
 
 	m_game.mainWindow()->display();
 }
 
-void InMapState::moveSelected(int x, int y) {
+void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	if (x < 0 || y < 0 || x > m_tiles.size()-1 || y > m_tiles[x].size()-1) {
 		return;
 	}
 
-	m_selectedx = x;
-	m_selectedy = y;
+	m_selected.x = x;
+	m_selected.y = y;
+
+	//Deal with going off screen. (Pull focal tile toward selected) 
+}
+
+void InMapState::onSelectPress() {
+
+	if ( (m_selectedCharacter = characterAt(m_selected.x, m_selected.y)) != NULL) {
+		m_characterIsSelected = true;
+		m_cursor.setAnimation("blue", true);
+	}
+	//Maybe play sound
+	//Maybe choose what menu to display based on what's on selected tile
+	//Maybe change cursor color
+	//Maybe display places that hero can move
+}
+
+ICharacter* InMapState::characterAt(const int& x, const int& y) {
+	sf::Vector2i pos(0, 0);
+	for (unsigned int i = 0; i < m_characters.size(); ++i) {
+		pos = m_characters[i]->gridPos();
+		if (pos.x == x && pos.y == y) {
+			return m_characters[i];
+		}
+	}
+
+	return NULL;
 }

@@ -86,19 +86,19 @@ void Hero::draw(IGameState& gameState, sf::RenderWindow& window) {
 	window.draw(m_spriteSheet.sprite());
 }
 
-sf::Vector2f Hero::getPosition() const {
+sf::Vector2f Hero::position() const {
 	sf::Vector2f position = m_spriteSheet.getPosition();
 	return sf::Vector2f(position);
 }
 
-void Hero::setPosition(const sf::Vector2f& pos) {
-	m_spriteSheet.setPosition(pos);
+void Hero::setPosition(const int& x, const int& y) {
+	m_spriteSheet.setPosition(sf::Vector2f((float)x, (float)y));
 }
 
-sf::Vector2u Hero::getGridPos() {
-	return sf::Vector2u(m_gridx, m_gridy);
+sf::Vector2i Hero::gridPos() {
+	return sf::Vector2i(m_gridx, m_gridy);
 }
-void Hero::setGridPos(sf::Vector2u gridPos) {
-	m_gridx = gridPos.x;
-	m_gridy = gridPos.y;
+void Hero::setGridPos(const int& x, const int& y) {
+	m_gridx = x;
+	m_gridy = y;
 }

@@ -23,21 +23,27 @@ public:
 	void update();
 	void draw();
 
+	ICharacter* characterAt(const int& x, const int& y);
+
 private:
 	InMapState();
 	InMapState(const InMapState& otherState);
 	void operator=(const InMapState& otherState);
 
-	void moveSelected(int x, int y);
-
+	void moveSelected(const unsigned int& x,const unsigned int& y);
+	void onSelectPress();
+	
 	Game& m_game;
-	int m_selectedx;
-	int m_selectedy;
 	std::vector<std::vector<MapTile>> m_tiles;
+	sf::Vector2i m_focalTile;
+	sf::Vector2i m_selected;
+	
 	std::vector<ICharacter*> m_characters;
+	ICharacter* m_selectedCharacter;
 	SpriteSheet m_cursor;
-
 	sf::Music m_music;
+
+	bool m_characterIsSelected;
 };
 
 #endif

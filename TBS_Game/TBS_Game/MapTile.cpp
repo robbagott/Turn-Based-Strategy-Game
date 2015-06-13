@@ -6,8 +6,7 @@
 
 MapTile::MapTile(std::string terrainID, bool traversable, int posx, int posy, int tileSize) :
 	m_traversable(traversable), 
-	m_gridx(posx), 
-	m_gridy(posy), 
+	m_gridPos(sf::Vector2i(posx, posy)), 
 	m_occupied(false) {
 
 	std::ifstream terrainStream("../Assets/Data/terrain.json", std::ios_base::binary);
@@ -60,8 +59,7 @@ MapTile::MapTile(const MapTile& other) {
 
 MapTile::MapTile() :
 	m_traversable (false),
-	m_gridx(0),
-	m_gridy(0),
+	m_gridPos(sf::Vector2i(0,0)),
 	m_occupied(false),
 	m_ground(false),
 	m_deployable(false),
@@ -82,12 +80,12 @@ void MapTile::operator=(const MapTile& otherTile) {
 	m_moveCost = otherTile.m_moveCost;
 	m_evasionBoost = otherTile.m_evasionBoost;
 
-	m_gridx = otherTile.m_gridx;
-	m_gridy = otherTile.m_gridy;
+	m_gridPos.x = otherTile.m_gridPos.x;
+	m_gridPos.y = otherTile.m_gridPos.y;
 }
 
-void MapTile::draw(Game& game, int xpos, int ypos) {
-	m_spriteSheet.sprite().setPosition(xpos, ypos);
+void MapTile::draw(Game& game, const int& xpos, const int& ypos) {
+	m_spriteSheet.sprite().setPosition((float)xpos, (float)ypos);
 	game.mainWindow()->draw(m_spriteSheet.sprite());
 }
 
@@ -107,12 +105,8 @@ bool MapTile::ground() const {
 	return m_ground;
 }
 
-int MapTile::gridx() const {
-	return m_gridx;
-}
-
-int MapTile::gridy() const {
-	return m_gridy;
+const sf::Vector2i& MapTile::gridPos() const {
+	return m_gridPos;
 }
 
 bool MapTile::deployable() const {

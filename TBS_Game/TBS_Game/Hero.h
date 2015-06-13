@@ -17,11 +17,11 @@ public:
 	void update(IGameState& gameState);
 	void draw(IGameState& gameState, sf::RenderWindow& window);
 
-	sf::Vector2f getPosition() const;
-	void setPosition(const sf::Vector2f&);
+	sf::Vector2f position() const;
+	void setPosition(const int& x, const int& y);
 
-	sf::Vector2u getGridPos();
-	void setGridPos(sf::Vector2u gridPos);
+	sf::Vector2i gridPos();
+	void setGridPos(const int& x, const int& y);
 
 private:
 	

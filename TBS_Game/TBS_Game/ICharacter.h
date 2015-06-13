@@ -8,8 +8,10 @@ class ICharacter : public IGameActor
 public:
 	virtual ~ICharacter() {}
 
-	virtual sf::Vector2f getPosition() const = 0;
-	virtual void setPosition(const sf::Vector2f&) = 0;
+	virtual sf::Vector2f position() const = 0;
+	virtual void setPosition(const int& x, const int& y) = 0;
+	virtual sf::Vector2i gridPos() = 0;
+	virtual void setGridPos(const int& x, const int& y) = 0;
 
 protected:
 	//How much damage can be taken

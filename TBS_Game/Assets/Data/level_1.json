@@ -3,6 +3,16 @@
 	"height" : 8,
 	"startx" : 1,
 	"starty" : 1,
+	"units" : [
+		{	"unit_type" : "x19",
+			"x" : 0,
+			"y" : 0
+		},
+		{	"unit_type" : "x19",
+			"x" : 3,
+			"y" : 3
+		}
+	],
 	"tiles" : [
 		{ 	"x" : 0,
 			"y" : 0,
