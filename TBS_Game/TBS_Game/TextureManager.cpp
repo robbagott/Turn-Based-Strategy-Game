@@ -37,7 +37,7 @@ sf::Texture*TextureManager::load(std::string filename) {
 
 void TextureManager::free(std::string filename) {
 	if (m_textures.count(filename) == 0) {
-		std::cerr << "Attempted to deallocate unloaded texture: " + filename << std::endl;
+		//std::cerr << "Attempted to deallocate unloaded texture: " + filename << std::endl;
 	}
 
 	m_referenceCounts[filename] -= 1;

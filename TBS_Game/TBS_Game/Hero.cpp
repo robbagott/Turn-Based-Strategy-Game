@@ -94,11 +94,3 @@ sf::Vector2f Hero::position() const {
 void Hero::setPosition(const int& x, const int& y) {
 	m_spriteSheet.setPosition(sf::Vector2f((float)x, (float)y));
 }
-
-sf::Vector2i Hero::gridPos() {
-	return sf::Vector2i(m_gridx, m_gridy);
-}
-void Hero::setGridPos(const int& x, const int& y) {
-	m_gridx = x;
-	m_gridy = y;
-}

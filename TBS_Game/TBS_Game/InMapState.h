@@ -32,15 +32,19 @@ private:
 
 	void moveSelected(const unsigned int& x,const unsigned int& y);
 	void onSelectPress();
+	//updates moveSpan
+	void populateMoveSpan(int movePoints, const int& x, const int& y);
 	
 	Game& m_game;
 	std::vector<std::vector<MapTile>> m_tiles;
 	sf::Vector2i m_focalTile;
 	sf::Vector2i m_selected;
-	
+
+	std::vector<sf::Vector2i> m_moveSpan;
 	std::vector<ICharacter*> m_characters;
 	ICharacter* m_selectedCharacter;
 	SpriteSheet m_cursor;
+	SpriteSheet m_moveSpanSprite;
 	sf::Music m_music;
 
 	bool m_characterIsSelected;

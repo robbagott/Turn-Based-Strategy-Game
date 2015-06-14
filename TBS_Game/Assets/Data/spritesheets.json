@@ -129,5 +129,19 @@
 				"loop_wait_ticks" : 0
 				}
 		]
+	},
+	"move_span" : {
+		"filepath" : "../Assets/Graphics/move_span.png",
+		"frame_height" : 32,
+		"frame_width" : 32,
+		"animations" : [
+			{
+				"name" : "default", 
+				"start" : 0, 
+				"end" : 0,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				}
+		]
 	}
 }

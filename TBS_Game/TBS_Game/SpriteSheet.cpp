@@ -3,6 +3,7 @@
 #include "json.h"
 #include "GameUtilities.h"
 #include "TextureManager.h"
+#include <iostream>
 
 SpriteSheet::SpriteSheet() {
 
@@ -37,6 +38,8 @@ void SpriteSheet::operator=(const SpriteSheet& other) {
 	m_sprite.setTexture(*m_texture);
 	m_sprite.setPosition(other.m_sprite.getPosition());
 	m_sprite.setTextureRect(other.m_sprite.getTextureRect());
+
+	//std::cout << "in spritesheet equals operator" << std::endl;
 }
 
 SpriteSheet::~SpriteSheet() {
@@ -195,6 +198,8 @@ void SpriteSheet::setSpriteSheet(std::string spriteSheetName) {
 		//set sprite attributes
 		m_sprite.setTexture(*m_texture);
 		m_sprite.setTextureRect(sf::IntRect(0, 0, m_frameWidth, m_frameHeight));
+
+		//std::cerr << "setting sprite sheet data" << std::endl;
 }
 
 sf::Sprite& SpriteSheet::sprite()  {

@@ -10,8 +10,18 @@ public:
 
 	virtual sf::Vector2f position() const = 0;
 	virtual void setPosition(const int& x, const int& y) = 0;
-	virtual sf::Vector2i gridPos() = 0;
-	virtual void setGridPos(const int& x, const int& y) = 0;
+	virtual sf::Vector2i gridPos() const;
+	virtual void setGridPos(const int& x, const int& y);
+
+	virtual int health() const;
+	virtual void setHealth(const int& val);
+	virtual int strength() const;
+	virtual int armor() const;
+	virtual int intelligence() const;
+	virtual int evasion() const;
+	virtual int energy() const;
+	virtual int movePoints() const;
+
 
 protected:
 	//How much damage can be taken
@@ -30,6 +40,8 @@ protected:
 	int m_energy = 0;
 	//How many tiles unit can cover per turn
 	int m_movePoints = 0;
+
+	int m_gridx, m_gridy;
 };
 
 #endif

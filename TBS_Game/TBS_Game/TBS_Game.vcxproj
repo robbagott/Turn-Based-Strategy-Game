@@ -97,6 +97,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="ICharacter.cpp" />
     <ClCompile Include="InMapState.cpp" />
     <ClCompile Include="jsoncpp.cpp" />
     <ClCompile Include="Logger.cpp" />

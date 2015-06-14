@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
+#include <queue>
 #include "GameUtilities.h"
 #include "Json.h"
 #include "hero.h"
@@ -102,11 +104,16 @@ InMapState::InMapState(Game& game, std::string filename) :
 	//initialize cursor
 	m_cursor.sprite().setPosition((float)(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2), (float)(game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2));
 	m_cursor.setAnimation("white", true);
+
 	//Initialize focal point to center of map
 	m_focalTile = sf::Vector2i(tilesWide/2-1, tilesHigh/2-1);
 
 	//initialize music. Doesn't start playing yet
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
+
+	//initialize move_span sprite
+	m_moveSpanSprite.setSpriteSheet("move_span");
+	m_moveSpanSprite.setAnimation("default", true);
 
 	//*****************TEMPORARY*****************
 	ICharacter* hero = new Hero("x19");
@@ -138,21 +145,30 @@ void InMapState::handleEvents() {
 		if (m_characterIsSelected) {
 			if (event.type == sf::Event::EventType::KeyPressed) {
 				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-					moveSelected(m_selected.x - 1, m_selected.y);
+					if ( std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x - 1, m_selected.y)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x - 1, m_selected.y);
+					}
 				}
 				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-					moveSelected(m_selected.x + 1, m_selected.y);
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x + 1, m_selected.y)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x + 1, m_selected.y);
+					}
 				}
 				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-					moveSelected(m_selected.x, m_selected.y + 1);
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y + 1)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x, m_selected.y + 1);
+					}
 				}
 				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-					moveSelected(m_selected.x, m_selected.y - 1);
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y - 1)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x, m_selected.y - 1);
+					}
 				}
 				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
 					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
 					m_characterIsSelected = false;
 					m_cursor.setAnimation("white", true);
+					m_moveSpan.clear();
 				}
 				else if (event.key.code == sf::Keyboard::Escape) {
 					m_game.requestQuit();
@@ -211,6 +227,14 @@ void InMapState::draw() {
 		}
 	}
 
+	for (int i = 0; i < m_moveSpan.size(); ++i) {
+
+		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * m_game.appInfo().tileSize();
+		drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].y - m_focalTile.y) * m_game.appInfo().tileSize();
+		m_moveSpanSprite.sprite().setPosition((float)drawx, (float)drawy);
+		m_game.mainWindow()->draw(m_moveSpanSprite.sprite());
+	}
+
 	//Draw cursor overlay
 	drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_selected.x - m_focalTile.x) * m_game.appInfo().tileSize();
 	drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_selected.y - m_focalTile.y) * m_game.appInfo().tileSize();
@@ -242,10 +266,12 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 
 void InMapState::onSelectPress() {
 
-	if ( (m_selectedCharacter = characterAt(m_selected.x, m_selected.y)) != NULL) {
+	if ((m_selectedCharacter = characterAt(m_selected.x, m_selected.y)) != NULL) {
 		m_characterIsSelected = true;
 		m_cursor.setAnimation("blue", true);
+		populateMoveSpan(m_selectedCharacter->movePoints(), m_selected.x, m_selected.y);
 	}
+
 	//Maybe play sound
 	//Maybe choose what menu to display based on what's on selected tile
 	//Maybe change cursor color
@@ -262,4 +288,55 @@ ICharacter* InMapState::characterAt(const int& x, const int& y) {
 	}
 
 	return NULL;
+}
+
+//Implemented as a modified BFS starting from x, and y
+void InMapState::populateMoveSpan(int movePoints, const int& x, const int& y) {
+	
+	std::queue<sf::Vector3i> queue;
+
+	if (movePoints < 0) {
+		std::cout << "edge" << std::endl;
+		return;
+	}
+	m_moveSpan.push_back(sf::Vector2i(x, y));
+	queue.push(sf::Vector3i(x, y, movePoints));
+	sf::Vector3i current = {0,0,0};
+
+	while (!queue.empty()) {
+		current = queue.front();
+		queue.pop();
+
+		if (current.z >= 0)	{
+			m_moveSpan.push_back(sf::Vector2i(current.x, current.y));
+			//Right
+			if (current.x + 1 < m_tiles.size() && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_moveSpan.end()) {
+				if (!(current.z - m_tiles[current.x + 1][current.y].moveCost() < 0)) {
+					queue.push(sf::Vector3i(current.x + 1, current.y, current.z - m_tiles[current.x + 1][current.y].moveCost()));
+					m_moveSpan.push_back(sf::Vector2i(current.x + 1, current.y));
+				}
+			}
+			//left
+			if (current.x - 1 >= 0 && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_moveSpan.end()) {
+				if (!(current.z - m_tiles[current.x - 1][current.y].moveCost() < 0)) {
+					queue.push(sf::Vector3i(current.x - 1, current.y, current.z - m_tiles[current.x - 1][current.y].moveCost()));
+					m_moveSpan.push_back(sf::Vector2i(current.x - 1, current.y));
+				}
+			}
+			//up
+			if (current.y - 1 >= 0 && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_moveSpan.end()) {
+				if (!(current.z - m_tiles[current.x][current.y - 1].moveCost() < 0)) {
+					queue.push(sf::Vector3i(current.x, current.y - 1, current.z - m_tiles[current.x][current.y - 1].moveCost()));
+					m_moveSpan.push_back(sf::Vector2i(current.x, current.y - 1));
+				}
+			}
+			//down
+			if (current.y + 1 < m_tiles[current.x].size() && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_moveSpan.end()) {
+				if (!(current.z - m_tiles[current.x][current.y + 1].moveCost() < 0)) {
+					queue.push(sf::Vector3i(current.x, current.y + 1, current.z - m_tiles[current.x][current.y + 1].moveCost()));
+					m_moveSpan.push_back(sf::Vector2i(current.x, current.y + 1));
+				}
+			}
+		}
+	}
 }

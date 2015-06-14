@@ -20,15 +20,10 @@ public:
 	sf::Vector2f position() const;
 	void setPosition(const int& x, const int& y);
 
-	sf::Vector2i gridPos();
-	void setGridPos(const int& x, const int& y);
-
 private:
 	
 	SpriteSheet m_spriteSheet;
 	std::string m_name;
-
-	int m_gridx, m_gridy;
 };
 
 #endif
