@@ -26,9 +26,9 @@ int ICharacter::movePoints() const{
 }
 
 sf::Vector2i ICharacter::gridPos() const {
-	return sf::Vector2i(m_gridx, m_gridy);
+	return m_gridPos;
 }
 void ICharacter::setGridPos(const int& x, const int& y) {
-	m_gridx = x;
-	m_gridy = y;
+	m_gridPos.x = x;
+	m_gridPos.y = y;
 }

@@ -11,7 +11,8 @@
 InMapState::InMapState(Game& game, std::string filename) :
 	m_game(game),
 	m_cursor("cursor"),
-	m_characterIsSelected(false) {	
+	m_mapState(MS_DEFAULT),
+	m_turn(PLAYERTURN) {	
 
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
@@ -66,39 +67,64 @@ InMapState::InMapState(Game& game, std::string filename) :
 	if (!root.isMember("tiles")) {
 		GameUtilities::exitWithMessage("failed to find tiles in level with filename " + filename);
 	}
+
 	//Load the tiles into the grid
 	Json::Value tileRoot = root["tiles"];
 	int x = 0, y = 0;
 	std::string terrainID;
 	bool traversable = true;
-	for (int i = 0; i < (tilesHigh)*(tilesWide); ++i) {
-		if (tileRoot[i] != NULL) {
-			if (!tileRoot[i].isMember("x") || !tileRoot[i]["x"].isInt()) {
-				GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
+	for (unsigned int i = 0; i < tileRoot.size(); ++i) {
+		if (!tileRoot[i].isMember("x") || !tileRoot[i]["x"].isInt()) {
+			GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
 
-			}
-			x = tileRoot[i]["x"].asInt();
-			if (!tileRoot[i].isMember("y") || !tileRoot[i]["y"].isInt()) {
-				GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
-
-			}
-			y = tileRoot[i]["y"].asInt();
-			if (!tileRoot[i].isMember("terrainID") || !tileRoot[i]["terrainID"].isString()) {
-				GameUtilities::exitWithMessage("Failed to load terrainID for tiles from " + filename);
-
-			}
-			terrainID = tileRoot[i]["terrainID"].asString();
-			if (!tileRoot[i].isMember("traversable") || !tileRoot[i]["traversable"].isBool()) {
-				GameUtilities::exitWithMessage("Failed to load traversable for tiles from " + filename);
-
-			}
-			traversable = tileRoot[i]["traversable"].asBool();
 		}
-		else {
-			GameUtilities::exitWithMessage("Failed to load tiles from " + filename);
-		}
+		x = tileRoot[i]["x"].asInt();
+		if (!tileRoot[i].isMember("y") || !tileRoot[i]["y"].isInt()) {
+			GameUtilities::exitWithMessage("Failed to load x for tiles from " + filename);
 
+		}
+		y = tileRoot[i]["y"].asInt();
+		if (!tileRoot[i].isMember("terrainID") || !tileRoot[i]["terrainID"].isString()) {
+			GameUtilities::exitWithMessage("Failed to load terrainID for tiles from " + filename);
+
+		}
+		terrainID = tileRoot[i]["terrainID"].asString();
+		if (!tileRoot[i].isMember("traversable") || !tileRoot[i]["traversable"].isBool()) {
+			GameUtilities::exitWithMessage("Failed to load traversable for tiles from " + filename);
+
+		}
+		traversable = tileRoot[i]["traversable"].asBool();
 		m_tiles[x][y] = MapTile(terrainID, traversable, x, y, m_game.appInfo().tileSize());
+	}
+
+	//Load the units into the map
+	Json::Value unitRoot = root["units"];
+	std::string unitType;
+	bool friendly = false;
+	for (unsigned int i = 0; i < unitRoot.size(); ++i) {
+		if (!unitRoot[i].isMember("x") || !unitRoot[i]["x"].isInt()) {
+			GameUtilities::exitWithMessage("Failed to load x for units from " + filename);
+
+		}
+		x = unitRoot[i]["x"].asInt();
+		if (!unitRoot[i].isMember("y") || !unitRoot[i]["y"].isInt()) {
+			GameUtilities::exitWithMessage("Failed to load x for units from " + filename);
+
+		}
+		y = unitRoot[i]["y"].asInt();
+		if (!unitRoot[i].isMember("unit_type") || !unitRoot[i]["unit_type"].isString()) {
+			GameUtilities::exitWithMessage("Failed to load unit_type for units from" + filename);
+
+		}
+		unitType = unitRoot[i]["unit_type"].asString();
+		if (!unitRoot[i].isMember("friendly") || !unitRoot[i]["friendly"].isBool()) {
+			GameUtilities::exitWithMessage("Failed to load friendly for units from " + filename);
+
+		}
+		friendly = unitRoot[i]["friendly"].asBool();
+		
+		m_characters.push_back(new Hero(unitType, friendly));
+		m_characters.back()->setGridPos(x, y);
 	}
 
 	//initialize cursor
@@ -114,15 +140,11 @@ InMapState::InMapState(Game& game, std::string filename) :
 	//initialize move_span sprite
 	m_moveSpanSprite.setSpriteSheet("move_span");
 	m_moveSpanSprite.setAnimation("default", true);
-
-	//*****************TEMPORARY*****************
-	ICharacter* hero = new Hero("x19");
-	hero->setPosition( game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2, game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2);
-	m_characters.push_back(hero);
 }
 
 InMapState::~InMapState() {
-	for (unsigned int i = 0; i < m_characters.size(); i++) {
+	std::cerr << "deconstructing InMapState" << std::endl;
+	for (unsigned int i = 0; i < m_characters.size(); ++i) {
 		delete m_characters[i];
 	}
 }
@@ -139,44 +161,20 @@ void InMapState::pause() {}
 void InMapState::resume() {}
 
 void InMapState::handleEvents() {
+	if (m_turn == PLAYERTURN) {
+		playerControl();
+	}
+	else if (m_turn == ENEMYTURN) {
+		aiControl();
+	}
+}
+
+void InMapState::playerControl() {
 	sf::Event event;
 	while (m_game.mainWindow()->pollEvent(event)) {
 
-		if (m_characterIsSelected) {
-			if (event.type == sf::Event::EventType::KeyPressed) {
-				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-					if ( std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x - 1, m_selected.y)) != m_moveSpan.end()) {
-						moveSelected(m_selected.x - 1, m_selected.y);
-					}
-				}
-				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x + 1, m_selected.y)) != m_moveSpan.end()) {
-						moveSelected(m_selected.x + 1, m_selected.y);
-					}
-				}
-				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y + 1)) != m_moveSpan.end()) {
-						moveSelected(m_selected.x, m_selected.y + 1);
-					}
-				}
-				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y - 1)) != m_moveSpan.end()) {
-						moveSelected(m_selected.x, m_selected.y - 1);
-					}
-				}
-				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
-					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
-					m_characterIsSelected = false;
-					m_cursor.setAnimation("white", true);
-					m_moveSpan.clear();
-				}
-				else if (event.key.code == sf::Keyboard::Escape) {
-					m_game.requestQuit();
-				}
-			}
-		}
-
-		else {
+		switch (m_mapState) {
+		case MS_DEFAULT:
 			if (event.type == sf::Event::EventType::KeyPressed) {
 				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
 					moveSelected(m_selected.x - 1, m_selected.y);
@@ -197,12 +195,65 @@ void InMapState::handleEvents() {
 					m_game.requestQuit();
 				}
 			}
+			break;
+		case MS_CHARACTERSELECTED:
+			if (event.type == sf::Event::EventType::KeyPressed) {
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x - 1, m_selected.y)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x - 1, m_selected.y);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x + 1, m_selected.y)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x + 1, m_selected.y);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y + 1)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x, m_selected.y + 1);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+					if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(m_selected.x, m_selected.y - 1)) != m_moveSpan.end()) {
+						moveSelected(m_selected.x, m_selected.y - 1);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
+					m_mapState = MS_CHARACTERPLACED;
+					m_cursor.setAnimation("white", true);
+					m_moveSpan.clear();
+				}
+				else if (event.key.code == sf::Keyboard::Escape) {
+					m_game.requestQuit();
+				}
+			}
+			break;
+		case MS_CHARACTERPLACED:
+
+			m_mapState = MS_DEFAULT;
+			break;
 		}
 
+		//At any time, quit if escape is pressed
 		if (event.type == sf::Event::Closed) {
 			m_game.requestQuit();
 		}
 	}
+}
+
+void InMapState::aiControl() {
+	//Handle input
+	sf::Event event;
+	while (m_game.mainWindow()->pollEvent(event)) {
+
+		//At any time, quit if escape is pressed
+		if (event.type == sf::Event::Closed) {
+			m_game.requestQuit();
+		}
+	}
+
+	std::cerr << "enemy turn" << std::endl;
 }
 
 void InMapState::update() {
@@ -227,7 +278,7 @@ void InMapState::draw() {
 		}
 	}
 
-	for (int i = 0; i < m_moveSpan.size(); ++i) {
+	for (unsigned int i = 0; i < m_moveSpan.size(); ++i) {
 
 		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * m_game.appInfo().tileSize();
 		drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].y - m_focalTile.y) * m_game.appInfo().tileSize();
@@ -266,10 +317,12 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 
 void InMapState::onSelectPress() {
 
-	if ((m_selectedCharacter = characterAt(m_selected.x, m_selected.y)) != NULL) {
-		m_characterIsSelected = true;
+	ICharacter* character = characterAt(m_selected.x, m_selected.y);
+	if (character != NULL && character->friendly() == true) {
+		m_selectedCharacter = character;
 		m_cursor.setAnimation("blue", true);
 		populateMoveSpan(m_selectedCharacter->movePoints(), m_selected.x, m_selected.y);
+		m_mapState = MS_CHARACTERSELECTED;
 	}
 
 	//Maybe play sound
@@ -299,40 +352,46 @@ void InMapState::populateMoveSpan(int movePoints, const int& x, const int& y) {
 		std::cout << "edge" << std::endl;
 		return;
 	}
-	m_moveSpan.push_back(sf::Vector2i(x, y));
 	queue.push(sf::Vector3i(x, y, movePoints));
 	sf::Vector3i current = {0,0,0};
-
+	m_moveSpan.push_back(sf::Vector2i(x, y));
 	while (!queue.empty()) {
 		current = queue.front();
 		queue.pop();
 
 		if (current.z >= 0)	{
-			m_moveSpan.push_back(sf::Vector2i(current.x, current.y));
 			//Right
-			if (current.x + 1 < m_tiles.size() && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_moveSpan.end()) {
-				if (!(current.z - m_tiles[current.x + 1][current.y].moveCost() < 0)) {
+			if (current.x + 1 < m_tiles.size()
+				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_moveSpan.end()
+				&& characterAt(current.x + 1, current.y) == NULL) {
+				if (current.z - m_tiles[current.x + 1][current.y].moveCost() >= 0) {
 					queue.push(sf::Vector3i(current.x + 1, current.y, current.z - m_tiles[current.x + 1][current.y].moveCost()));
 					m_moveSpan.push_back(sf::Vector2i(current.x + 1, current.y));
 				}
 			}
 			//left
-			if (current.x - 1 >= 0 && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_moveSpan.end()) {
-				if (!(current.z - m_tiles[current.x - 1][current.y].moveCost() < 0)) {
+			if (current.x - 1 >= 0
+				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_moveSpan.end()
+				&& characterAt(current.x - 1, current.y) == NULL) {
+				if (current.z - m_tiles[current.x - 1][current.y].moveCost() >= 0) {
 					queue.push(sf::Vector3i(current.x - 1, current.y, current.z - m_tiles[current.x - 1][current.y].moveCost()));
 					m_moveSpan.push_back(sf::Vector2i(current.x - 1, current.y));
 				}
 			}
 			//up
-			if (current.y - 1 >= 0 && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_moveSpan.end()) {
-				if (!(current.z - m_tiles[current.x][current.y - 1].moveCost() < 0)) {
+			if (current.y - 1 >= 0
+				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_moveSpan.end()
+				&& characterAt(current.x, current.y - 1) == NULL) {
+				if (current.z - m_tiles[current.x][current.y - 1].moveCost() >= 0) {
 					queue.push(sf::Vector3i(current.x, current.y - 1, current.z - m_tiles[current.x][current.y - 1].moveCost()));
 					m_moveSpan.push_back(sf::Vector2i(current.x, current.y - 1));
 				}
 			}
 			//down
-			if (current.y + 1 < m_tiles[current.x].size() && std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_moveSpan.end()) {
-				if (!(current.z - m_tiles[current.x][current.y + 1].moveCost() < 0)) {
+			if (current.y + 1 < m_tiles[current.x].size()
+				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_moveSpan.end()
+				&& characterAt(current.x, current.y + 1) == NULL) {
+				if (current.z - m_tiles[current.x][current.y + 1].moveCost() >= 0) {
 					queue.push(sf::Vector3i(current.x, current.y + 1, current.z - m_tiles[current.x][current.y + 1].moveCost()));
 					m_moveSpan.push_back(sf::Vector2i(current.x, current.y + 1));
 				}

@@ -21,6 +21,7 @@ public:
 	virtual int evasion() const;
 	virtual int energy() const;
 	virtual int movePoints() const;
+	virtual bool friendly() const = 0;
 
 
 protected:
@@ -41,7 +42,11 @@ protected:
 	//How many tiles unit can cover per turn
 	int m_movePoints = 0;
 
-	int m_gridx, m_gridy;
+	//MOST LIKELY TEMPORARY**********************
+	bool m_friendly;
+
+	//Player controlled or enemy controlled
+	sf::Vector2i m_gridPos;
 };
 
 #endif

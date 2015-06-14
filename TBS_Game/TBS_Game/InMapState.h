@@ -13,6 +13,10 @@ class InMapState : public IGameState
 public:
 	InMapState(Game& game, std::string filename);
 	~InMapState();
+
+	enum MapState {MS_DEFAULT, MS_CHARACTERSELECTED, MS_CHARACTERPLACED, MS_ANIMATIONPLAYING};
+	enum Turn {PLAYERTURN, ENEMYTURN};
+
 	void init();
 	void cleanup();
 
@@ -26,13 +30,17 @@ public:
 	ICharacter* characterAt(const int& x, const int& y);
 
 private:
+	//Don't copy or incorrectly construct
 	InMapState();
 	InMapState(const InMapState& otherState);
 	void operator=(const InMapState& otherState);
 
+	///implementation functions for clarity of code
+	void playerControl();
+	void aiControl();
+
 	void moveSelected(const unsigned int& x,const unsigned int& y);
 	void onSelectPress();
-	//updates moveSpan
 	void populateMoveSpan(int movePoints, const int& x, const int& y);
 	
 	Game& m_game;
@@ -47,7 +55,8 @@ private:
 	SpriteSheet m_moveSpanSprite;
 	sf::Music m_music;
 
-	bool m_characterIsSelected;
+	MapState m_mapState;
+	Turn m_turn;
 };
 
 #endif

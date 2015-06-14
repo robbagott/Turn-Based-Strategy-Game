@@ -8,7 +8,7 @@
 class Hero : public ICharacter
 {
 public:
-	Hero(std::string heroName);
+	Hero(std::string heroName, bool friendly);
 	Hero(const Hero& other);
 	~Hero();
 	void operator=(const Hero& other);
@@ -19,6 +19,9 @@ public:
 
 	sf::Vector2f position() const;
 	void setPosition(const int& x, const int& y);
+
+	bool friendly() const;
+	const std::string& name() const;
 
 private:
 	

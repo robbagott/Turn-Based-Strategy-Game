@@ -3,9 +3,11 @@
 #include "GameUtilities.h"
 #include <fstream>
 
-Hero::Hero(std::string heroName) :
+Hero::Hero(std::string heroName, bool friendly) :
 	m_spriteSheet(heroName), 
 	m_name(heroName) {
+
+	m_friendly = friendly; 
 
 	m_spriteSheet.setAnimation("selected", true);
 
@@ -63,15 +65,25 @@ Hero::Hero(std::string heroName) :
 	}
 	m_movePoints = heroRoot[toFind].asInt();
 
-	m_gridx = 0;
-	m_gridy = 0;
+	m_gridPos = {0, 0};
 }
 Hero::Hero(const Hero& other) {
-
+	*this = other;
 }
 Hero::~Hero() {}
 void Hero::operator=(const Hero& other) {
+	m_spriteSheet = other.m_spriteSheet;
+	m_name = other.m_name;
+	m_health = other.m_health;
+	m_strength = other.m_strength;
+	m_armor = other.m_armor;
+	m_intelligence = other.m_intelligence;
+	m_evasion = other.m_evasion;
+	m_energy = other.m_energy;
+	m_movePoints = other.m_movePoints;
+	m_gridPos = other.m_gridPos;
 
+	m_friendly = other.m_friendly;
 }
 
 void Hero::handleEvent(IGameState& gameState, sf::Event event) {
@@ -93,4 +105,12 @@ sf::Vector2f Hero::position() const {
 
 void Hero::setPosition(const int& x, const int& y) {
 	m_spriteSheet.setPosition(sf::Vector2f((float)x, (float)y));
+}
+
+bool Hero::friendly() const {
+	return m_friendly;
+}
+
+const std::string& Hero::name() const {
+	return m_name;
 }
