@@ -32,7 +32,7 @@ public:
 	void setSpriteSheet(std::string spriteSheetName);
 
 	sf::Vector2f getPosition() const;
-	void setPosition(sf::Vector2f pos);
+	void setPosition(const float& x, const float& y);
 
 	sf::Sprite& sprite();
 

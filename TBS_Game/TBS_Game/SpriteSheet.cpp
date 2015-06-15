@@ -218,6 +218,6 @@ void SpriteSheet::setSpriteToFrame(int frameNumber) {
 sf::Vector2f SpriteSheet::getPosition() const{
 	return m_sprite.getPosition();
 }
-void SpriteSheet::setPosition(sf::Vector2f pos) {
-	m_sprite.setPosition(pos);
+void SpriteSheet::setPosition(const float& x, const float& y) {
+	m_sprite.setPosition(x, y);
 }

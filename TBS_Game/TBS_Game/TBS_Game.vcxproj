@@ -105,6 +105,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MapTile.cpp" />
     <ClCompile Include="MenuButton.cpp" />
+    <ClCompile Include="CharacterSelectMenu.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="stdAfx.cpp" />
@@ -125,6 +126,7 @@
     <ClInclude Include="MapTile.h" />
     <ClInclude Include="MenuButton.h" />
     <ClInclude Include="NullGameState.h" />
+    <ClInclude Include="CharacterSelectMenu.h" />
     <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="stdAfx.h" />

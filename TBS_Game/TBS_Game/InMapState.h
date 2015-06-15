@@ -7,6 +7,7 @@
 #include "MapTile.h"
 #include "SpriteSheet.h"
 #include "ICharacter.h"
+#include "CharacterSelectMenu.h"
 
 class InMapState : public IGameState
 {
@@ -44,19 +45,28 @@ private:
 	void populateMoveSpan(int movePoints, const int& x, const int& y);
 	
 	Game& m_game;
+
+	//Map stuff
 	std::vector<std::vector<MapTile>> m_tiles;
 	sf::Vector2i m_focalTile;
 	sf::Vector2i m_selected;
 
+	//Character stuff
 	std::vector<sf::Vector2i> m_moveSpan;
 	std::vector<ICharacter*> m_characters;
 	ICharacter* m_selectedCharacter;
+
+	//Assets
 	SpriteSheet m_cursor;
 	SpriteSheet m_moveSpanSprite;
 	sf::Music m_music;
 
+	//Logic stuff
 	MapState m_mapState;
 	Turn m_turn;
+
+	//Overlay stuff
+	std::vector<CharacterSelectMenu*> m_menus;
 };
 
 #endif

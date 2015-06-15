@@ -221,6 +221,7 @@ void InMapState::playerControl() {
 				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
 					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
 					m_mapState = MS_CHARACTERPLACED;
+					m_menus.push_back(new CharacterSelectMenu());
 					m_cursor.setAnimation("white", true);
 					m_moveSpan.clear();
 				}
@@ -230,8 +231,16 @@ void InMapState::playerControl() {
 			}
 			break;
 		case MS_CHARACTERPLACED:
+			if (event.type == sf::Event::EventType::KeyPressed) {
 
-			m_mapState = MS_DEFAULT;
+				m_menus.back()->handleEvent(event);
+
+				if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+					delete m_menus.back();
+					m_menus.pop_back();
+					m_mapState = MS_DEFAULT;
+				}
+			}
 			break;
 		}
 
@@ -262,6 +271,11 @@ void InMapState::update() {
 	for (unsigned int i = 0; i < m_characters.size(); i++) {
 		m_characters[i]->update(*this);
 	}
+
+	if (m_mapState == MS_CHARACTERPLACED) {
+		for (unsigned int i = 0; i < m_menus.size(); ++i)
+		m_menus[i]->update();
+	}
 }
 
 void InMapState::draw() {
@@ -278,6 +292,7 @@ void InMapState::draw() {
 		}
 	}
 
+	//Draw moveSpan highlights
 	for (unsigned int i = 0; i < m_moveSpan.size(); ++i) {
 
 		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * m_game.appInfo().tileSize();
@@ -301,6 +316,12 @@ void InMapState::draw() {
 		m_characters[i]->draw(*this, *m_game.mainWindow());
 	}
 
+	//Draw any menus
+	if (m_mapState == MS_CHARACTERPLACED) {
+		for (unsigned int i = 0; i < m_menus.size(); ++i) {
+			m_menus[i]->draw(*m_game.mainWindow());
+		}
+	}
 	m_game.mainWindow()->display();
 }
 

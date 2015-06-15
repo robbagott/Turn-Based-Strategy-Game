@@ -143,5 +143,61 @@
 				"loop_wait_ticks" : 0
 				}
 		]
+	},
+	"character_select_menu" : {
+		"filepath" : "../Assets/Graphics/character_select_menu.png",
+		"frame_height" : 144,
+		"frame_width" : 96,
+		"animations" : [
+			{
+				"name" : "default", 
+				"start" : 0, 
+				"end" : 0,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				}
+		]
+	},
+	"attack_option" : {
+		"filepath" : "../Assets/Graphics/attack_option.png",
+		"frame_height" : 16,
+		"frame_width" : 64,
+		"animations" : [
+			{
+				"name" : "default", 
+				"start" : 0, 
+				"end" : 0,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				}
+		]
+	},
+	"wait_option" : {
+		"filepath" : "../Assets/Graphics/wait_option.png",
+		"frame_height" : 16,
+		"frame_width" : 64,
+		"animations" : [
+			{
+				"name" : "default", 
+				"start" : 0, 
+				"end" : 0,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				}
+		]
+	},
+	"hand_cursor" : {
+		"filepath" : "../Assets/Graphics/hand_cursor.png",
+		"frame_height" : 16,
+		"frame_width" : 32,
+		"animations" : [
+			{
+				"name" : "default", 
+				"start" : 0, 
+				"end" : 3,
+				"wait_ticks" : 5,
+				"loop_wait_ticks" : 0
+				}
+		]
 	}
 }

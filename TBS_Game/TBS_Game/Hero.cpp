@@ -104,7 +104,7 @@ sf::Vector2f Hero::position() const {
 }
 
 void Hero::setPosition(const int& x, const int& y) {
-	m_spriteSheet.setPosition(sf::Vector2f((float)x, (float)y));
+	m_spriteSheet.setPosition((float)x, (float)y);
 }
 
 bool Hero::friendly() const {

@@ -1,11 +1,25 @@
-﻿Build started 6/13/2015 7:15:38 PM.
+﻿Build started 6/14/2015 7:36:53 PM.
      1>Project "C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\TBS_Game\TBS_Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\include\\" /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt InMapState.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\include\\" /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp Hero.cpp ICharacter.cpp InMapState.cpp MainMenu.cpp MapTile.cpp MenuButton.cpp CharacterSelectMenu.cpp SplashScreen.cpp SpriteSheet.cpp
+         SpriteSheet.cpp
+         CharacterSelectMenu.cpp
+         MapTile.cpp
          InMapState.cpp
-     1>InMapState.cpp(230): warning C4018: '<' : signed/unsigned mismatch
-     1>InMapState.cpp(313): warning C4018: '<' : signed/unsigned mismatch
-     1>InMapState.cpp(334): warning C4018: '<' : signed/unsigned mismatch
+     1>InMapState.cpp(386): warning C4018: '<' : signed/unsigned mismatch
+     1>InMapState.cpp(413): warning C4018: '<' : signed/unsigned mismatch
+         ICharacter.cpp
+         Hero.cpp
+         Generating Code...
+         Compiling...
+         MainMenu.cpp
+     1>MainMenu.cpp(178): warning C4244: 'argument' : conversion from 'float' to 'sf::Uint8', possible loss of data
+     1>MainMenu.cpp(184): warning C4244: 'argument' : conversion from 'float' to 'sf::Uint8', possible loss of data
+         Generating Code...
+         Skipping... (no relevant changes detected)
+         SplashScreen.cpp
+         MenuButton.cpp
+         Game.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Debug\TBS_Game.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\\SFML-2.3\lib" "sfml-graphics-d.lib" "sfml-window-d.lib" "sfml-system-d.lib" "sfml-audio-d.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Debug\TBS_Game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Rob Bagott\Desktop\Unnamed_TBS_Project\TBS_Game\Debug\TBS_Game.lib" /MACHINE:X86 Debug\AppInfo.obj
          Debug\Game.obj
@@ -19,6 +33,7 @@
          Debug\MainMenu.obj
          Debug\MapTile.obj
          Debug\MenuButton.obj
+         Debug\CharacterSelectMenu.obj
          Debug\SplashScreen.obj
          Debug\SpriteSheet.obj
          Debug\stdAfx.obj
@@ -28,4 +43,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.80
+Time Elapsed 00:00:07.03
