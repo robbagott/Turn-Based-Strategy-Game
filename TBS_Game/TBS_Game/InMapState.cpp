@@ -94,7 +94,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 
 		}
 		traversable = tileRoot[i]["traversable"].asBool();
-		m_tiles[x][y] = MapTile(terrainID, traversable, x, y, m_game.appInfo().tileSize());
+		m_tiles[x][y] = MapTile(terrainID, traversable, x, y, AppInfo::get()->tileSize());
 	}
 
 	//Load the units into the map
@@ -128,7 +128,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 	}
 
 	//initialize cursor
-	m_cursor.sprite().setPosition((float)(game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2), (float)(game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2));
+	m_cursor.sprite().setPosition((float)(AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2), (float)(AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2));
 	m_cursor.setAnimation("white", true);
 
 	//Initialize focal point to center of map
@@ -143,7 +143,6 @@ InMapState::InMapState(Game& game, std::string filename) :
 }
 
 InMapState::~InMapState() {
-	std::cerr << "deconstructing InMapState" << std::endl;
 	for (unsigned int i = 0; i < m_characters.size(); ++i) {
 		delete m_characters[i];
 	}
@@ -286,8 +285,8 @@ void InMapState::draw() {
 	int	drawy = 0;
 	for (unsigned int i = 0; i < m_tiles.size(); i++) {
 		for (unsigned int j = 0; j < m_tiles[i].size(); j++) {
-			drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (i - m_focalTile.x) * m_game.appInfo().tileSize();
-			drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (j - m_focalTile.y) * m_game.appInfo().tileSize();
+			drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (i - m_focalTile.x) * AppInfo::get()->tileSize();
+			drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (j - m_focalTile.y) * AppInfo::get()->tileSize();
 			m_tiles[i][j].draw(m_game, drawx , drawy);
 		}
 	}
@@ -295,23 +294,23 @@ void InMapState::draw() {
 	//Draw moveSpan highlights
 	for (unsigned int i = 0; i < m_moveSpan.size(); ++i) {
 
-		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * m_game.appInfo().tileSize();
-		drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_moveSpan[i].y - m_focalTile.y) * m_game.appInfo().tileSize();
+		drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * AppInfo::get()->tileSize();
+		drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (m_moveSpan[i].y - m_focalTile.y) * AppInfo::get()->tileSize();
 		m_moveSpanSprite.sprite().setPosition((float)drawx, (float)drawy);
 		m_game.mainWindow()->draw(m_moveSpanSprite.sprite());
 	}
 
 	//Draw cursor overlay
-	drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (m_selected.x - m_focalTile.x) * m_game.appInfo().tileSize();
-	drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (m_selected.y - m_focalTile.y) * m_game.appInfo().tileSize();
+	drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (m_selected.x - m_focalTile.x) * AppInfo::get()->tileSize();
+	drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (m_selected.y - m_focalTile.y) * AppInfo::get()->tileSize();
 	m_cursor.sprite().setPosition((float)drawx, (float)drawy);
 	m_game.mainWindow()->draw(m_cursor.sprite());
 
 	//Draw characters
 	for (unsigned int i = 0; i < m_characters.size(); i++) {
 		sf::Vector2i gridPos = m_characters[i]->gridPos();
-		drawx = (m_game.appInfo().centerScreenx() - m_game.appInfo().tileSize() / 2) + (gridPos.x - m_focalTile.x) * m_game.appInfo().tileSize();
-		drawy = (m_game.appInfo().centerScreeny() - m_game.appInfo().tileSize() / 2) + (gridPos.y - m_focalTile.y) * m_game.appInfo().tileSize();
+		drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (gridPos.x - m_focalTile.x) * AppInfo::get()->tileSize();
+		drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (gridPos.y - m_focalTile.y) * AppInfo::get()->tileSize();
 		m_characters[i]->setPosition(drawx, drawy);
 		m_characters[i]->draw(*this, *m_game.mainWindow());
 	}

@@ -19,6 +19,9 @@ MainMenu::MainMenu(Game& game) :
 	m_blackTexture = TextureManager::get().load("../Assets/Graphics/black_screen.png");
 	m_blackSprite.setTexture(*m_blackTexture);
 
+	//Make resolution independent soon
+	int resx = AppInfo::get()->resx();
+	int resy = AppInfo::get()->resy();
 	m_buttons.push_back(MenuButton("new_game_button", 54, 98, 52, 188));
 	m_buttons.push_back(MenuButton("load_game_button", 276, 98, 52, 188));
 	m_buttons.push_back(MenuButton("options_button", 54, 176, 52, 188));

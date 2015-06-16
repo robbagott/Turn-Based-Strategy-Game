@@ -25,7 +25,6 @@ public:
 	//Any code that has access to the game engine can ask it nicely to quit
 	void requestQuit();
 	sf::RenderWindow* mainWindow() const;
-	AppInfo& appInfo();
 
 private:
 	//Prevent copying of the object (ensure single copy exists)
@@ -49,7 +48,6 @@ private:
 	std::stack<IGameState*> m_gameStates;
 	IGameState* m_nextGameState;
 	sf::RenderWindow* m_mainWindow;
-	AppInfo m_appInfo;
 
 	sf::Clock m_loopClock;
 	sf::Time m_frameTime;

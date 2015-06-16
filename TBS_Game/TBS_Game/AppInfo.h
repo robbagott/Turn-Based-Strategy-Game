@@ -6,7 +6,7 @@
 class AppInfo
 {
 public:
-	AppInfo();
+	static AppInfo* get();
 
 	enum ScreenMode { SM_FULLSCREEN, SM_BORDERLESSWINDOW, SM_WINDOW };
 
@@ -22,6 +22,7 @@ public:
 	int tileSize();
 
 private:
+	AppInfo();
 	AppInfo(const AppInfo& other);
 	void operator=(const AppInfo& other);
 

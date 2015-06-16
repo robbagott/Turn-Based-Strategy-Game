@@ -137,3 +137,8 @@ int AppInfo::centerScreeny(){
 int AppInfo::tileSize() {
 	return m_tileSize;
 }
+
+AppInfo* AppInfo::get() {
+	static AppInfo* instance = new AppInfo();
+	return instance;
+}
