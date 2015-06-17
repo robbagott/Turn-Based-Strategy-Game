@@ -4,6 +4,7 @@
 #include "ICharacter.h"
 #include <SFML/Graphics.hpp>
 #include "SpriteSheet.h"
+#include "CharacterOverlay.h"
 
 class Hero : public ICharacter
 {
@@ -26,6 +27,7 @@ public:
 private:
 	
 	SpriteSheet m_spriteSheet;
+	CharacterOverlay m_overlay;
 	std::string m_name;
 };
 

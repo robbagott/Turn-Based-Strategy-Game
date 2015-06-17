@@ -329,8 +329,18 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 		return;
 	}
 
+	ICharacter* character = characterAt(m_selected.x, m_selected.y);
+	if (character != NULL) {
+		character->showOverlay(false);
+	}
+
 	m_selected.x = x;
 	m_selected.y = y;
+
+	character = characterAt(m_selected.x, m_selected.y);
+	if (character != NULL) {
+		character->showOverlay(true);
+	}
 
 	//Deal with going off screen. (Pull focal tile toward selected) 
 }

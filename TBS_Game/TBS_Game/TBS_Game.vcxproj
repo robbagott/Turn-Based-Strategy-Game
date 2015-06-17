@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AppInfo.cpp" />
+    <ClCompile Include="CharacterOverlay.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameUtilities.cpp" />
     <ClCompile Include="Hero.cpp" />
@@ -113,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppInfo.h" />
+    <ClInclude Include="CharacterOverlay.h" />
     <ClInclude Include="ICharacter.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IGameActor.h" />

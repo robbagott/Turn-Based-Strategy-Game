@@ -32,3 +32,7 @@ void ICharacter::setGridPos(const int& x, const int& y) {
 	m_gridPos.x = x;
 	m_gridPos.y = y;
 }
+
+void ICharacter::showOverlay(bool show) {
+	m_showOverlay = show;
+}

@@ -66,11 +66,14 @@ Hero::Hero(std::string heroName, bool friendly) :
 	m_movePoints = heroRoot[toFind].asInt();
 
 	m_gridPos = {0, 0};
+
+	m_overlay.setCharacter(heroName, m_health, m_health);
 }
 Hero::Hero(const Hero& other) {
 	*this = other;
 }
 Hero::~Hero() {}
+
 void Hero::operator=(const Hero& other) {
 	m_spriteSheet = other.m_spriteSheet;
 	m_name = other.m_name;
@@ -82,6 +85,8 @@ void Hero::operator=(const Hero& other) {
 	m_energy = other.m_energy;
 	m_movePoints = other.m_movePoints;
 	m_gridPos = other.m_gridPos;
+	m_showOverlay = other.m_showOverlay;
+	m_overlay = other.m_overlay;
 
 	m_friendly = other.m_friendly;
 }
@@ -96,6 +101,10 @@ void Hero::update(IGameState& gameState) {
 
 void Hero::draw(IGameState& gameState, sf::RenderWindow& window) {
 	window.draw(m_spriteSheet.sprite());
+
+	if (m_showOverlay) {
+		m_overlay.draw(window);
+	}
 }
 
 sf::Vector2f Hero::position() const {

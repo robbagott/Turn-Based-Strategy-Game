@@ -13,16 +13,17 @@ public:
 	virtual sf::Vector2i gridPos() const;
 	virtual void setGridPos(const int& x, const int& y);
 
-	virtual int health() const;
-	virtual void setHealth(const int& val);
-	virtual int strength() const;
-	virtual int armor() const;
-	virtual int intelligence() const;
-	virtual int evasion() const;
-	virtual int energy() const;
-	virtual int movePoints() const;
+	int health() const;
+	void setHealth(const int& val);
+	int strength() const;
+	int armor() const;
+	int intelligence() const;
+	int evasion() const;
+	int energy() const;
+	int movePoints() const;
 	virtual bool friendly() const = 0;
-
+	
+	void showOverlay(bool show);
 
 protected:
 	//How much damage can be taken
@@ -45,6 +46,7 @@ protected:
 	//MOST LIKELY TEMPORARY**********************
 	bool m_friendly;
 
+	bool m_showOverlay = false;
 	//Player controlled or enemy controlled
 	sf::Vector2i m_gridPos;
 };
