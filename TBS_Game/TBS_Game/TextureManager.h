@@ -15,6 +15,7 @@ public:
 
 	sf::Texture* load(std::string);
 	void free(std::string);
+	void free(sf::Texture* texture);
 	void freeAll();
 
 private:

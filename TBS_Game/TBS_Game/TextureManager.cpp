@@ -46,6 +46,29 @@ void TextureManager::free(std::string filename) {
 	}
 }
 
+void TextureManager::free(sf::Texture* texture) {
+	if (texture == NULL) {
+		return;
+	}
+
+	bool found = false;
+	std::unordered_map<std::string, sf::Texture*>::iterator iter;
+	for (iter = m_textures.begin(); iter != m_textures.end(); ++iter) {
+		if (iter->second == texture) {
+			found = true;
+			m_referenceCounts[iter->first] -= 1;
+			if (m_referenceCounts[iter->first] == 0) {
+				m_textures.erase(iter->first);
+			}
+			break;
+		}
+	}
+	
+	if (found == false) {
+		GameUtilities::exitWithMessage("attempted to deallocate texture unknow to the TextureManager");
+	}
+}
+
 //call on end of program
 void TextureManager::freeAll() {
 	std::unordered_map<std::string, sf::Texture*>::iterator i = m_textures.begin();

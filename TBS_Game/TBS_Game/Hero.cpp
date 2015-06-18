@@ -3,9 +3,10 @@
 #include "GameUtilities.h"
 #include <fstream>
 
-Hero::Hero(std::string heroName, bool friendly) :
+Hero::Hero(IGameState& gameState, std::string heroName, bool friendly) :
 	m_spriteSheet(heroName), 
-	m_name(heroName) {
+	m_name(heroName),
+	m_gameState(gameState) {
 
 	m_friendly = friendly; 
 
@@ -69,12 +70,13 @@ Hero::Hero(std::string heroName, bool friendly) :
 
 	m_overlay.setCharacter(heroName, m_health, m_health);
 }
-Hero::Hero(const Hero& other) {
+Hero::Hero(const Hero& other) : m_gameState(other.m_gameState) {
 	*this = other;
 }
 Hero::~Hero() {}
 
 void Hero::operator=(const Hero& other) {
+	m_gameState = other.m_gameState;
 	m_spriteSheet = other.m_spriteSheet;
 	m_name = other.m_name;
 	m_health = other.m_health;
@@ -91,15 +93,15 @@ void Hero::operator=(const Hero& other) {
 	m_friendly = other.m_friendly;
 }
 
-void Hero::handleEvent(IGameState& gameState, sf::Event event) {
+void Hero::handleEvent(sf::Event event) {
 
 }
 
-void Hero::update(IGameState& gameState) {
+void Hero::update() {
 	m_spriteSheet.update();
 }
 
-void Hero::draw(IGameState& gameState, sf::RenderWindow& window) {
+void Hero::draw(sf::RenderWindow& window) {
 	window.draw(m_spriteSheet.sprite());
 
 	if (m_showOverlay) {

@@ -33,13 +33,14 @@ CharacterOverlay::CharacterOverlay(const CharacterOverlay& other) {
 }
 
 void CharacterOverlay::operator=(const CharacterOverlay& other) {
-	m_initialized = other.m_initialized;
 	m_characterName = other.m_characterName;
 
+	TextureManager::get().free(m_background);
+	TextureManager::get().free(m_profileView);
 	m_background = TextureManager::get().load("../Assets/Graphics/character_overlay.png");
 	m_profileView = TextureManager::get().load("../Assets/Graphics/" + other.m_characterName + "_profile.png");
-	
 
+	m_initialized = other.m_initialized;
 	m_healthBar = other.m_healthBar;
 	m_currentHealthBar = other.m_healthBar;
 	m_currentHealth = other.m_currentHealth;
@@ -47,14 +48,8 @@ void CharacterOverlay::operator=(const CharacterOverlay& other) {
 }
 
 CharacterOverlay::~CharacterOverlay() {
-	if (m_initialized) {
-		TextureManager::get().free("../Assets/Graphics/character_overlay.png");
-		TextureManager::get().free("../Assets/Graphics/" + m_characterName + "_profile.png");
-	}
-	else {
-		TextureManager::get().free("../Assets/Graphics/null_texture.png");
-		TextureManager::get().free("../Assets/Graphics/null_texture.png");
-	}
+	TextureManager::get().free(m_background);
+	TextureManager::get().free(m_profileView);
 }
 
 void CharacterOverlay::draw(sf::RenderWindow& window) {
@@ -87,15 +82,8 @@ void CharacterOverlay::setCharacter(const std::string& characterName, const int&
 	m_characterName = characterName;
 	m_initialized = true;
 
-	if (!m_initialized) {
-		TextureManager::get().free("null_texture");
-		TextureManager::get().free("null_texture");
-	}
-	else {
-		TextureManager::get().free("../Assets/Graphics/character_overlay.png");
-		TextureManager::get().free("../Assets/Graphics/" + m_characterName + "_profile.png");
-	}
-
+	TextureManager::get().free(m_background);
+	TextureManager::get().free(m_profileView);
 	m_background = TextureManager::get().load("../Assets/Graphics/character_overlay.png");
 	m_profileView = TextureManager::get().load("../Assets/Graphics/" + characterName + "_profile.png");
 

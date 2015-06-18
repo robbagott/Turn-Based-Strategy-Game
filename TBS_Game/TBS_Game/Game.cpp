@@ -54,13 +54,25 @@ void Game::start() {
 
 	init();
 
+	//counter for printing framerate
+	int counter = 0;
+	float avgFrameTimeUsed = 0;
+
 	sf::Time startTime, endTime;
 	while (!m_quitRequested) {
 		startTime = m_loopClock.getElapsedTime();
 		gameLoop();
 		endTime = m_loopClock.getElapsedTime();
 		sf::sleep(m_frameTime - (endTime - startTime));
-		//std::cout << 1/(m_loopClock.getElapsedTime() - startTime).asSeconds() << std::endl;
+
+		//Track percentage of frametime used
+		avgFrameTimeUsed = (avgFrameTimeUsed + (100 * (float)(endTime - startTime).asMicroseconds() / (float)(m_loopClock.getElapsedTime() - startTime).asMicroseconds())) / 2;
+		counter++;
+		if (counter >= 60) {
+			//Displays percentage of used time per frame.
+			std::cout << 100 * (float)(endTime - startTime).asMicroseconds() / (float)(m_loopClock.getElapsedTime() - startTime).asMicroseconds() << std::endl;
+			counter = 0;
+		}
 	}
 
 	cleanup();

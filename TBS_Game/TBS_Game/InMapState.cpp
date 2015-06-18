@@ -123,7 +123,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 		}
 		friendly = unitRoot[i]["friendly"].asBool();
 		
-		m_characters.push_back(new Hero(unitType, friendly));
+		m_characters.push_back(new Hero(*this, unitType, friendly));
 		m_characters.back()->setGridPos(x, y);
 	}
 
@@ -132,7 +132,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 	m_cursor.setAnimation("white", true);
 
 	//Initialize focal point to center of map
-	m_focalTile = sf::Vector2i(tilesWide/2-1, tilesHigh/2-1);
+	m_focalTile = sf::Vector2i(tilesWide/2, tilesHigh/2);
 
 	//initialize music. Doesn't start playing yet
 	m_music.openFromFile("../Assets/Sounds/level_1.wav");
@@ -268,7 +268,7 @@ void InMapState::update() {
 	m_cursor.update();
 
 	for (unsigned int i = 0; i < m_characters.size(); i++) {
-		m_characters[i]->update(*this);
+		m_characters[i]->update();
 	}
 
 	if (m_mapState == MS_CHARACTERPLACED) {
@@ -312,7 +312,7 @@ void InMapState::draw() {
 		drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (gridPos.x - m_focalTile.x) * AppInfo::get()->tileSize();
 		drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (gridPos.y - m_focalTile.y) * AppInfo::get()->tileSize();
 		m_characters[i]->setPosition(drawx, drawy);
-		m_characters[i]->draw(*this, *m_game.mainWindow());
+		m_characters[i]->draw(*m_game.mainWindow());
 	}
 
 	//Draw any menus

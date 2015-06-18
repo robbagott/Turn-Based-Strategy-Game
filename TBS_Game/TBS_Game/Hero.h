@@ -9,14 +9,14 @@
 class Hero : public ICharacter
 {
 public:
-	Hero(std::string heroName, bool friendly);
+	Hero(IGameState& gameState, std::string heroName, bool friendly);
 	Hero(const Hero& other);
 	~Hero();
 	void operator=(const Hero& other);
 
-	void handleEvent(IGameState& gameState, sf::Event event);
-	void update(IGameState& gameState);
-	void draw(IGameState& gameState, sf::RenderWindow& window);
+	void handleEvent(sf::Event event);
+	void update();
+	void draw(sf::RenderWindow& window);
 
 	sf::Vector2f position() const;
 	void setPosition(const int& x, const int& y);
@@ -26,6 +26,7 @@ public:
 
 private:
 	
+	IGameState& m_gameState;
 	SpriteSheet m_spriteSheet;
 	CharacterOverlay m_overlay;
 	std::string m_name;
