@@ -18,9 +18,9 @@ public:
 	void update();
 	void draw(sf::RenderWindow& window);
 
+
 	sf::Vector2f position() const;
 	void setPosition(const int& x, const int& y);
-
 	bool friendly() const;
 	const std::string& name() const;
 

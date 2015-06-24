@@ -34,13 +34,20 @@ CharacterOverlay::CharacterOverlay(const CharacterOverlay& other) {
 
 void CharacterOverlay::operator=(const CharacterOverlay& other) {
 	m_characterName = other.m_characterName;
+	m_initialized = other.m_initialized;
 
 	TextureManager::get().free(m_background);
 	TextureManager::get().free(m_profileView);
-	m_background = TextureManager::get().load("../Assets/Graphics/character_overlay.png");
-	m_profileView = TextureManager::get().load("../Assets/Graphics/" + other.m_characterName + "_profile.png");
 
-	m_initialized = other.m_initialized;
+	if (m_initialized) {
+		m_background = TextureManager::get().load("../Assets/Graphics/character_overlay.png");
+		m_profileView = TextureManager::get().load("../Assets/Graphics/" + m_characterName + "_profile.png");
+	}
+	else {
+		m_background = TextureManager::get().load("../Assets/Graphics/null_texture.png");
+		m_profileView = TextureManager::get().load("../Assets/Graphics/null_texture.png");
+	}
+
 	m_healthBar = other.m_healthBar;
 	m_currentHealthBar = other.m_healthBar;
 	m_currentHealth = other.m_currentHealth;

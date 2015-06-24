@@ -70,8 +70,9 @@ void Game::start() {
 		counter++;
 		if (counter >= 60) {
 			//Displays percentage of used time per frame.
-			std::cout << 100 * (float)(endTime - startTime).asMicroseconds() / (float)(m_loopClock.getElapsedTime() - startTime).asMicroseconds() << std::endl;
+			std::cout << "Percentage frame time use: " << avgFrameTimeUsed << std::endl;
 			counter = 0;
+			avgFrameTimeUsed = 0;
 		}
 	}
 

@@ -136,9 +136,16 @@
 		"frame_width" : 32,
 		"animations" : [
 			{
-				"name" : "default", 
+				"name" : "move", 
 				"start" : 0, 
 				"end" : 0,
+				"wait_ticks" : 30,
+				"loop_wait_ticks" : 0
+				},
+			{
+				"name" : "attack", 
+				"start" : 1, 
+				"end" : 1,
 				"wait_ticks" : 30,
 				"loop_wait_ticks" : 0
 				}

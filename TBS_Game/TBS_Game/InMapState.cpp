@@ -12,7 +12,8 @@ InMapState::InMapState(Game& game, std::string filename) :
 	m_game(game),
 	m_cursor("cursor"),
 	m_mapState(MS_DEFAULT),
-	m_turn(PLAYERTURN) {	
+	m_turn(PLAYERTURN), 
+	m_selectedCharacter(NULL) {	
 
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
@@ -139,7 +140,7 @@ InMapState::InMapState(Game& game, std::string filename) :
 
 	//initialize move_span sprite
 	m_moveSpanSprite.setSpriteSheet("move_span");
-	m_moveSpanSprite.setAnimation("default", true);
+	m_moveSpanSprite.setAnimation("move", true);
 }
 
 InMapState::~InMapState() {
@@ -223,6 +224,7 @@ void InMapState::playerControl() {
 					m_menus.push_back(new CharacterSelectMenu());
 					m_cursor.setAnimation("white", true);
 					m_moveSpan.clear();
+					m_attackSpan.clear();
 				}
 				else if (event.key.code == sf::Keyboard::Escape) {
 					m_game.requestQuit();
@@ -237,6 +239,8 @@ void InMapState::playerControl() {
 				if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
 					delete m_menus.back();
 					m_menus.pop_back();
+
+					m_selectedCharacter = NULL;
 					m_mapState = MS_DEFAULT;
 				}
 			}
@@ -292,10 +296,19 @@ void InMapState::draw() {
 	}
 
 	//Draw moveSpan highlights
+	m_moveSpanSprite.setAnimation("move", true);
 	for (unsigned int i = 0; i < m_moveSpan.size(); ++i) {
 
 		drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (m_moveSpan[i].x - m_focalTile.x) * AppInfo::get()->tileSize();
 		drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (m_moveSpan[i].y - m_focalTile.y) * AppInfo::get()->tileSize();
+		m_moveSpanSprite.sprite().setPosition((float)drawx, (float)drawy);
+		m_game.mainWindow()->draw(m_moveSpanSprite.sprite());
+	}
+
+	m_moveSpanSprite.setAnimation("attack", true);
+	for (unsigned int i = 0; i < m_attackSpan.size(); ++i) {
+		drawx = (AppInfo::get()->centerScreenx() - AppInfo::get()->tileSize() / 2) + (m_attackSpan[i].x - m_focalTile.x) * AppInfo::get()->tileSize();
+		drawy = (AppInfo::get()->centerScreeny() - AppInfo::get()->tileSize() / 2) + (m_attackSpan[i].y - m_focalTile.y) * AppInfo::get()->tileSize();
 		m_moveSpanSprite.sprite().setPosition((float)drawx, (float)drawy);
 		m_game.mainWindow()->draw(m_moveSpanSprite.sprite());
 	}
@@ -330,7 +343,7 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	}
 
 	ICharacter* character = characterAt(m_selected.x, m_selected.y);
-	if (character != NULL) {
+	if (character != NULL && m_selectedCharacter == NULL) {
 		character->showOverlay(false);
 	}
 
@@ -338,7 +351,7 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	m_selected.y = y;
 
 	character = characterAt(m_selected.x, m_selected.y);
-	if (character != NULL) {
+	if (character != NULL && m_selectedCharacter == NULL) {
 		character->showOverlay(true);
 	}
 
@@ -375,55 +388,80 @@ ICharacter* InMapState::characterAt(const int& x, const int& y) {
 
 //Implemented as a modified BFS starting from x, and y
 void InMapState::populateMoveSpan(int movePoints, const int& x, const int& y) {
+	//stupid check
+	if (movePoints < 0) { return; }
 	
-	std::queue<sf::Vector3i> queue;
+	struct Vec4 {
+		int x, y, z, a;
+	};
 
-	if (movePoints < 0) {
-		std::cout << "edge" << std::endl;
-		return;
-	}
-	queue.push(sf::Vector3i(x, y, movePoints));
-	sf::Vector3i current = {0,0,0};
+	//initialize attack range
+	int attackPoints = 1;
+
+	//Used in bfs to order traversals without recursion
+	std::queue<Vec4> queue;
+	queue.push({ x, y, movePoints, attackPoints});
 	m_moveSpan.push_back(sf::Vector2i(x, y));
+	Vec4 current = { 0, 0, 0 };
 	while (!queue.empty()) {
 		current = queue.front();
 		queue.pop();
 
-		if (current.z >= 0)	{
+		if (current.z >= 0 || current.a >= 0)	{
 			//Right
-			if (current.x + 1 < m_tiles.size()
-				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_moveSpan.end()
-				&& characterAt(current.x + 1, current.y) == NULL) {
-				if (current.z - m_tiles[current.x + 1][current.y].moveCost() >= 0) {
-					queue.push(sf::Vector3i(current.x + 1, current.y, current.z - m_tiles[current.x + 1][current.y].moveCost()));
-					m_moveSpan.push_back(sf::Vector2i(current.x + 1, current.y));
+			if (current.x + 1 < m_tiles.size()) {
+				if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_moveSpan.end()) {
+					if (characterAt(current.x + 1, current.y) == NULL && current.z - m_tiles[current.x + 1][current.y].moveCost() >= 0) {
+						queue.push({ current.x + 1, current.y, current.z - m_tiles[current.x + 1][current.y].moveCost(), current.a });
+						m_moveSpan.push_back(sf::Vector2i(current.x + 1, current.y));
+					}
+					else if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(current.x + 1, current.y)) == m_attackSpan.end()
+							&& current.a - 1 >= 0) {
+						queue.push({ current.x + 1, 0, current.a - 1 });
+						m_attackSpan.push_back(sf::Vector2i(current.x + 1, current.y));
+					}
 				}
 			}
 			//left
-			if (current.x - 1 >= 0
-				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_moveSpan.end()
-				&& characterAt(current.x - 1, current.y) == NULL) {
-				if (current.z - m_tiles[current.x - 1][current.y].moveCost() >= 0) {
-					queue.push(sf::Vector3i(current.x - 1, current.y, current.z - m_tiles[current.x - 1][current.y].moveCost()));
-					m_moveSpan.push_back(sf::Vector2i(current.x - 1, current.y));
+			if (current.x - 1 >= 0) {
+				if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_moveSpan.end()) {
+					if (characterAt(current.x - 1, current.y) == NULL && current.z - m_tiles[current.x - 1][current.y].moveCost() >= 0) {
+						queue.push({ current.x - 1, current.y, current.z - m_tiles[current.x - 1][current.y].moveCost(), current.a });
+						m_moveSpan.push_back(sf::Vector2i(current.x - 1, current.y));
+					}
+					else if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(current.x - 1, current.y)) == m_attackSpan.end()
+						&& current.a - 1 >= 0) {
+						queue.push({ current.x - 1, current.y, 0, current.a - 1 });
+						m_attackSpan.push_back(sf::Vector2i(current.x - 1, current.y));
+					}
 				}
 			}
 			//up
-			if (current.y - 1 >= 0
-				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_moveSpan.end()
-				&& characterAt(current.x, current.y - 1) == NULL) {
-				if (current.z - m_tiles[current.x][current.y - 1].moveCost() >= 0) {
-					queue.push(sf::Vector3i(current.x, current.y - 1, current.z - m_tiles[current.x][current.y - 1].moveCost()));
-					m_moveSpan.push_back(sf::Vector2i(current.x, current.y - 1));
+			if (current.y - 1 >= 0) {
+				if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_moveSpan.end()) {
+					if (characterAt(current.x, current.y - 1) == NULL && current.z - m_tiles[current.x][current.y - 1].moveCost() >= 0) {
+						queue.push({ current.x, current.y - 1, current.z - m_tiles[current.x][current.y - 1].moveCost(), current.a });
+						m_moveSpan.push_back(sf::Vector2i(current.x, current.y - 1));
+					}
+					else if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(current.x, current.y - 1)) == m_attackSpan.end()
+						&& current.a - 1 >= 0) {
+						queue.push({ current.x, current.y - 1, 0, current.a - 1 });
+						m_attackSpan.push_back(sf::Vector2i(current.x, current.y - 1));
+					}
 				}
 			}
 			//down
-			if (current.y + 1 < m_tiles[current.x].size()
-				&& std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_moveSpan.end()
-				&& characterAt(current.x, current.y + 1) == NULL) {
-				if (current.z - m_tiles[current.x][current.y + 1].moveCost() >= 0) {
-					queue.push(sf::Vector3i(current.x, current.y + 1, current.z - m_tiles[current.x][current.y + 1].moveCost()));
-					m_moveSpan.push_back(sf::Vector2i(current.x, current.y + 1));
+			if (current.y + 1 < m_tiles[current.x].size()) {
+				if (std::find(m_moveSpan.begin(), m_moveSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_moveSpan.end()) {
+					if (characterAt(current.x, current.y + 1) == NULL && current.z - m_tiles[current.x][current.y + 1].moveCost() >= 0) {
+						queue.push({ current.x, current.y + 1, current.z - m_tiles[current.x][current.y + 1].moveCost(), current.a });
+						m_moveSpan.push_back(sf::Vector2i(current.x, current.y + 1));
+					}
+					else if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(current.x, current.y + 1)) == m_attackSpan.end()
+						&& current.a - 1 >= 0) {
+						queue.push({ current.x, current.y + 1, 0, current.a - 1 });
+						m_attackSpan.push_back(sf::Vector2i(current.x, current.y + 1));
+					}
 				}
 			}
 		}

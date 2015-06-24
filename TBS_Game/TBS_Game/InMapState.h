@@ -53,6 +53,7 @@ private:
 
 	//Character stuff
 	std::vector<sf::Vector2i> m_moveSpan;
+	std::vector<sf::Vector2i> m_attackSpan;
 	std::vector<ICharacter*> m_characters;
 	ICharacter* m_selectedCharacter;
 

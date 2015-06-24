@@ -66,8 +66,7 @@
 			"terrainID" : "grass_1",
 			"traversable" : true 
 		},
-		{ 
-			"x" : 1,
+		{ 	"x" : 1,
 			"y" : 1, 
 			"terrainID" : "grass_1",
 			"traversable" : true
