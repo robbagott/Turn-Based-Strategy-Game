@@ -191,9 +191,6 @@ void InMapState::playerControl() {
 				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
 					onSelectPress();
 				}
-				else if (event.key.code == sf::Keyboard::Escape) {
-					m_game.requestQuit();
-				}
 			}
 			break;
 		case MS_CHARACTERSELECTED:
@@ -221,33 +218,98 @@ void InMapState::playerControl() {
 				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
 					m_selectedCharacter->setGridPos(m_selected.x, m_selected.y);
 					m_mapState = MS_CHARACTERPLACED;
-					m_menus.push_back(new CharacterSelectMenu());
+					m_menus.push_back(new CharacterSelectMenu(*characterAt(m_selected.x, m_selected.y), *this));
 					m_cursor.setAnimation("white", true);
-					m_moveSpan.clear();
-					m_attackSpan.clear();
-				}
-				else if (event.key.code == sf::Keyboard::Escape) {
-					m_game.requestQuit();
+					//m_moveSpan.clear();
+					//m_attackSpan.clear();
 				}
 			}
 			break;
-		case MS_CHARACTERPLACED:
+		case MS_CHARACTERPLACED: {
+			CharacterSelectMenu::Option choice = m_menus.back()->handleEvent(event);
+
+			if (choice == CharacterSelectMenu::Option::CSM_WAIT) {
+				delete m_menus.back();
+				m_menus.pop_back();
+				m_moveSpan.clear();
+				m_attackSpan.clear();
+				m_selectedCharacter = NULL;
+				m_mapState = MS_DEFAULT;
+			}
+			if (choice == CharacterSelectMenu::Option::CSM_ATTACK) {
+				delete m_menus.back();
+				m_menus.pop_back();
+				//m_menus.push_back();
+
+				//Check for characters to attack near character. Place cursor and switch state if so.
+
+				if (characterAt(m_selected.x - 1, m_selected.y)) {
+					moveSelected(m_selected.x - 1, m_selected.y);
+					m_mapState = MS_CHARACTERATTACKING;
+				}
+				else if (characterAt(m_selected.x + 1, m_selected.y)) {
+					moveSelected(m_selected.x + 1, m_selected.y);
+					m_mapState = MS_CHARACTERATTACKING;
+				} 
+				else if (characterAt(m_selected.x, m_selected.y + 1)) {
+					moveSelected(m_selected.x, m_selected.y + 1);
+					m_mapState = MS_CHARACTERATTACKING;
+				}
+				else if (characterAt(m_selected.x, m_selected.y - 1)) {
+					moveSelected(m_selected.x, m_selected.y - 1);
+					m_mapState = MS_CHARACTERATTACKING;
+				}
+			}
+			break;
+		}
+		case MS_CHARACTERATTACKING:
 			if (event.type == sf::Event::EventType::KeyPressed) {
-
-				m_menus.back()->handleEvent(event);
-
-				if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
-					delete m_menus.back();
-					m_menus.pop_back();
-
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+					if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(m_selectedCharacter->gridPos().x - 1, m_selectedCharacter->gridPos().y)) != m_attackSpan.end()
+						&& characterAt(m_selectedCharacter->gridPos().x - 1, m_selectedCharacter->gridPos().y) != NULL) {
+						moveSelected(m_selectedCharacter->gridPos().x - 1, m_selectedCharacter->gridPos().y);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+					if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(m_selectedCharacter->gridPos().x + 1, m_selectedCharacter->gridPos().y)) != m_attackSpan.end()
+						&& characterAt(m_selectedCharacter->gridPos().x + 1, m_selectedCharacter->gridPos().y) != NULL) {
+						moveSelected(m_selectedCharacter->gridPos().x + 1, m_selectedCharacter->gridPos().y);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+					if(std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y + 1)) != m_attackSpan.end()
+						&& characterAt(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y + 1) != NULL) {
+						moveSelected(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y + 1);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+					if (std::find(m_attackSpan.begin(), m_attackSpan.end(), sf::Vector2i(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y - 1)) != m_attackSpan.end()
+						&& characterAt(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y - 1) != NULL) {
+						moveSelected(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y - 1);
+					}
+				}
+				else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+					ICharacter* attackedCharacter = characterAt(m_selected.x, m_selected.y);
+					m_selectedCharacter->attack(attackedCharacter);
+					if (!attackedCharacter->isAlive()) {
+						delete attackedCharacter;
+						m_characters.erase(std::find(m_characters.begin(), m_characters.end(), attackedCharacter));
+					}
+					m_moveSpan.clear();
+					m_attackSpan.clear();
 					m_selectedCharacter = NULL;
-					m_mapState = MS_DEFAULT;
+					m_mapState = MS_DEFAULT;					
+				}
+				else if (event.key.code == sf::Keyboard::BackSpace) {
+					m_menus.push_back(new CharacterSelectMenu(*characterAt(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y), *this));
+					m_selected = sf::Vector2i(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y);
+					m_mapState = MS_CHARACTERPLACED;
 				}
 			}
 			break;
 		}
 
-		//At any time, quit if escape is pressed
+		//At any time, quit if closed
 		if (event.type == sf::Event::Closed) {
 			m_game.requestQuit();
 		}
@@ -259,7 +321,7 @@ void InMapState::aiControl() {
 	sf::Event event;
 	while (m_game.mainWindow()->pollEvent(event)) {
 
-		//At any time, quit if escape is pressed
+		//At any time, quit if closed
 		if (event.type == sf::Event::Closed) {
 			m_game.requestQuit();
 		}
@@ -343,7 +405,7 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	}
 
 	ICharacter* character = characterAt(m_selected.x, m_selected.y);
-	if (character != NULL && m_selectedCharacter == NULL) {
+	if (character != NULL) {
 		character->showOverlay(false);
 	}
 
@@ -351,8 +413,11 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	m_selected.y = y;
 
 	character = characterAt(m_selected.x, m_selected.y);
-	if (character != NULL && m_selectedCharacter == NULL) {
+	if (character != NULL) {
 		character->showOverlay(true);
+	}
+	else if (m_selectedCharacter != NULL) {
+		m_selectedCharacter->showOverlay(true);
 	}
 
 	//Deal with going off screen. (Pull focal tile toward selected) 

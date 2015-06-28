@@ -1,10 +1,8 @@
 #include "ICharacter.h"
+#include <iostream>
 
 int ICharacter::health() const{
 	return m_health;
-}
-void ICharacter::setHealth(const int& val) {
-	m_health = val;
 }
 int ICharacter::strength() const{
 	return m_strength;
@@ -35,4 +33,11 @@ void ICharacter::setGridPos(const int& x, const int& y) {
 
 void ICharacter::showOverlay(bool show) {
 	m_showOverlay = show;
+}
+
+bool ICharacter::isAlive() {
+	if (m_health > 0) {
+		return true;
+	}
+	return false;
 }

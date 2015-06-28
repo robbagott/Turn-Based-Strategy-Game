@@ -14,7 +14,8 @@ public:
 	virtual void setGridPos(const int& x, const int& y);
 
 	int health() const;
-	void setHealth(const int& val);
+	virtual void setHealth(const int& val) = 0;
+	bool isAlive();
 	int strength() const;
 	int armor() const;
 	int intelligence() const;
@@ -22,6 +23,8 @@ public:
 	int energy() const;
 	int movePoints() const;
 	virtual bool friendly() const = 0;
+
+	virtual void attack(ICharacter* attackedCharacter) = 0;
 	
 	void showOverlay(bool show);
 

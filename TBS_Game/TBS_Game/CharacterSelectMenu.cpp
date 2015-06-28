@@ -1,8 +1,11 @@
 #include "CharacterSelectMenu.h"
 
-CharacterSelectMenu::CharacterSelectMenu() :
+CharacterSelectMenu::CharacterSelectMenu(ICharacter& character, InMapState& mapState) :
 	m_cursor("hand_cursor"),
-	m_selected(0) {
+	m_selected(CSM_ATTACK),
+	m_character(character),
+	m_mapState(mapState)
+	{
 
 	//hand cursor parameters
 	m_cursor.setPosition(360 - m_cursor.sprite().getLocalBounds().width, 64);
@@ -22,17 +25,28 @@ CharacterSelectMenu::CharacterSelectMenu() :
 CharacterSelectMenu::~CharacterSelectMenu() {
 
 }
-void CharacterSelectMenu::handleEvent(sf::Event event) {
+
+CharacterSelectMenu::Option CharacterSelectMenu::handleEvent(sf::Event event) {
 	if (event.type == sf::Event::EventType::KeyPressed) {
 		if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-			select(m_selected + 1);
+			select((Option)(m_selected + 1));
+			return CSM_SIZE;
 		}
 		else if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-			select(m_selected - 1);
+			select((Option)(m_selected - 1));
+			return CSM_SIZE;
 		}
 		else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
+			if (m_selected == CSM_ATTACK) {
+				return CSM_ATTACK;
+			}
+			else if (m_selected == CSM_WAIT) {
+				return CSM_WAIT;
+			}
 		}
 	}
+
+	return CSM_SIZE;
 }
 
 void CharacterSelectMenu::update() {
@@ -51,8 +65,8 @@ void CharacterSelectMenu::draw(sf::RenderWindow& window) {
 	window.draw(m_cursor.sprite());
 }
 
-void CharacterSelectMenu::select(int choice) {
-	if (choice >= 0 && choice < m_options.size()) {
+void CharacterSelectMenu::select(Option choice) {
+	if (choice >= 0 && choice < CSM_SIZE) {
 		m_selected = choice;
 		m_cursor.setPosition(m_cursor.getPosition().x, choice*16 + 64);
 	}

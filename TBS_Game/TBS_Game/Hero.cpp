@@ -125,3 +125,12 @@ bool Hero::friendly() const {
 const std::string& Hero::name() const {
 	return m_name;
 }
+
+void Hero::attack(ICharacter* other) {
+	other->setHealth(other->health() - (m_strength - other->armor()));
+}
+
+void Hero::setHealth(const int& val) {
+	m_health = val;
+	m_overlay.setHealth(val);
+}

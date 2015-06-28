@@ -23,6 +23,8 @@ public:
 	void setPosition(const int& x, const int& y);
 	bool friendly() const;
 	const std::string& name() const;
+	void Hero::attack(ICharacter* other);
+	void setHealth(const int& val);
 
 private:
 	
