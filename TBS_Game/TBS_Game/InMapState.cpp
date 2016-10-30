@@ -1,4 +1,5 @@
 #include "InMapState.h"
+#include "TextureManager.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -13,7 +14,8 @@ InMapState::InMapState(Game& game, std::string filename) :
 	m_cursor("cursor"),
 	m_mapState(MS_DEFAULT),
 	m_turn(PLAYERTURN), 
-	m_selectedCharacter(NULL) {	
+	m_selectedCharacter(NULL),
+	m_turnChangeSpriteShowing(true) {
 
 	std::ifstream mapStream(filename, std::ios_base::binary);
 	if (!mapStream.good()) {
@@ -151,6 +153,12 @@ InMapState::~InMapState() {
 
 void InMapState::init() {
 	m_music.play();
+
+	//Initialize turnChangeSprite
+	sf::Texture* turnTexture = TextureManager::get().load("../Assets/Graphics/player_turn.png");
+	m_turnChangeSprite.setTexture(*turnTexture);
+	m_turnChangeSpriteClock = new sf::Clock();
+	m_turnChangeSpriteClock->restart();
 }
 
 void InMapState::cleanup() {
@@ -161,6 +169,10 @@ void InMapState::pause() {}
 void InMapState::resume() {}
 
 void InMapState::handleEvents() {
+	if (m_turnChangeSpriteShowing) {
+		return;
+	}
+
 	if (m_turn == PLAYERTURN) {
 		playerControl();
 	}
@@ -220,8 +232,6 @@ void InMapState::playerControl() {
 					m_mapState = MS_CHARACTERPLACED;
 					m_menus.push_back(new CharacterSelectMenu(*characterAt(m_selected.x, m_selected.y), *this));
 					m_cursor.setAnimation("white", true);
-					//m_moveSpan.clear();
-					//m_attackSpan.clear();
 				}
 			}
 			break;
@@ -229,35 +239,45 @@ void InMapState::playerControl() {
 			CharacterSelectMenu::Option choice = m_menus.back()->handleEvent(event);
 
 			if (choice == CharacterSelectMenu::Option::CSM_WAIT) {
+				m_selectedCharacter->setMoved(true);
+
 				delete m_menus.back();
 				m_menus.pop_back();
 				m_moveSpan.clear();
 				m_attackSpan.clear();
 				m_selectedCharacter = NULL;
 				m_mapState = MS_DEFAULT;
+
+				if(allCharactersMoved()) {
+					m_turn = Turn::ENEMYTURN;
+					changeTurn();
+				}
 			}
 			if (choice == CharacterSelectMenu::Option::CSM_ATTACK) {
-				delete m_menus.back();
-				m_menus.pop_back();
-				//m_menus.push_back();
-
 				//Check for characters to attack near character. Place cursor and switch state if so.
-
 				if (characterAt(m_selected.x - 1, m_selected.y)) {
 					moveSelected(m_selected.x - 1, m_selected.y);
 					m_mapState = MS_CHARACTERATTACKING;
+					delete m_menus.back();
+					m_menus.pop_back();
 				}
 				else if (characterAt(m_selected.x + 1, m_selected.y)) {
 					moveSelected(m_selected.x + 1, m_selected.y);
 					m_mapState = MS_CHARACTERATTACKING;
-				} 
+					delete m_menus.back();
+					m_menus.pop_back();
+				}
 				else if (characterAt(m_selected.x, m_selected.y + 1)) {
 					moveSelected(m_selected.x, m_selected.y + 1);
 					m_mapState = MS_CHARACTERATTACKING;
+					delete m_menus.back();
+					m_menus.pop_back();
 				}
 				else if (characterAt(m_selected.x, m_selected.y - 1)) {
 					moveSelected(m_selected.x, m_selected.y - 1);
 					m_mapState = MS_CHARACTERATTACKING;
+					delete m_menus.back();
+					m_menus.pop_back();
 				}
 			}
 			break;
@@ -295,10 +315,17 @@ void InMapState::playerControl() {
 						delete attackedCharacter;
 						m_characters.erase(std::find(m_characters.begin(), m_characters.end(), attackedCharacter));
 					}
+
+					//Change turn if appropriate
+					m_selectedCharacter->setMoved(true);
+					if (allCharactersMoved()) {
+						changeTurn();
+					}
+
 					m_moveSpan.clear();
 					m_attackSpan.clear();
 					m_selectedCharacter = NULL;
-					m_mapState = MS_DEFAULT;					
+					m_mapState = MS_DEFAULT;	
 				}
 				else if (event.key.code == sf::Keyboard::BackSpace) {
 					m_menus.push_back(new CharacterSelectMenu(*characterAt(m_selectedCharacter->gridPos().x, m_selectedCharacter->gridPos().y), *this));
@@ -325,9 +352,9 @@ void InMapState::aiControl() {
 		if (event.type == sf::Event::Closed) {
 			m_game.requestQuit();
 		}
-	}
 
-	std::cerr << "enemy turn" << std::endl;
+		changeTurn();
+	}
 }
 
 void InMapState::update() {
@@ -340,6 +367,22 @@ void InMapState::update() {
 	if (m_mapState == MS_CHARACTERPLACED) {
 		for (unsigned int i = 0; i < m_menus.size(); ++i)
 		m_menus[i]->update();
+	}
+
+	//Check for turnChangeTimer and update accordingly
+	if (m_turnChangeSpriteClock != NULL) {
+		if (m_turnChangeSpriteClock->getElapsedTime().asSeconds() > 1.0) {
+			if (m_turn == Turn::ENEMYTURN) {
+				TextureManager::get().free("../Assets/Graphics/enemy_turn.png");
+			}
+			else {
+				TextureManager::get().free("../Assets/Graphics/player_turn.png");
+			}
+			m_turnChangeSpriteShowing = false;
+
+			delete m_turnChangeSpriteClock;
+			m_turnChangeSpriteClock = NULL;
+		}
 	}
 }
 
@@ -396,6 +439,11 @@ void InMapState::draw() {
 			m_menus[i]->draw(*m_game.mainWindow());
 		}
 	}
+
+	//Draw a turn change graphic if present
+	if (m_turnChangeSpriteShowing) {
+		m_game.mainWindow()->draw(m_turnChangeSprite);
+	}
 	m_game.mainWindow()->display();
 }
 
@@ -404,6 +452,7 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 		return;
 	}
 
+	//Remove overlay of character at old selected tile
 	ICharacter* character = characterAt(m_selected.x, m_selected.y);
 	if (character != NULL) {
 		character->showOverlay(false);
@@ -412,6 +461,7 @@ void InMapState::moveSelected(const unsigned int& x, const unsigned int& y) {
 	m_selected.x = x;
 	m_selected.y = y;
 
+	//Add the new character's overlay if there is a character on the tile
 	character = characterAt(m_selected.x, m_selected.y);
 	if (character != NULL) {
 		character->showOverlay(true);
@@ -531,4 +581,38 @@ void InMapState::populateMoveSpan(int movePoints, const int& x, const int& y) {
 			}
 		}
 	}
+}
+
+bool InMapState::allCharactersMoved() {
+	for (int i = 0; i < m_characters.size(); ++i) {
+		if (m_characters[i]->isMoved() == false && m_characters[i]->friendly()) {
+			return Turn::PLAYERTURN;
+		}
+	}
+	return Turn::ENEMYTURN;
+}
+
+void InMapState::changeTurn() {
+	if (m_turn == Turn::PLAYERTURN) {
+		m_turn = Turn::ENEMYTURN;
+	}
+	else {
+		m_turn = Turn::PLAYERTURN;
+	}
+
+	//set texture for m_turnChangeSprite
+	if (m_turn == Turn::PLAYERTURN) {
+		sf::Texture* texture = TextureManager::get().load("../Assets/Graphics/player_turn.png");
+		m_turnChangeSprite.setTexture(*texture);
+
+	}
+	else {
+		sf::Texture* texture = TextureManager::get().load("../Assets/Graphics/enemy_turn.png");
+		m_turnChangeSprite.setTexture(*texture);
+	}
+	m_turnChangeSpriteShowing = true;
+	m_turnChangeSpriteClock = new sf::Clock();
+	m_turnChangeSpriteClock->restart();
+
+	//TODO refresh character move states, sprite colors (like grey to blue), etc.
 }

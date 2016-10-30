@@ -1,7 +1,7 @@
 resolution_x 256
 resolution_y 144
-screen_width 1366
-screen_height 768
-stretch_to_fit 1
-fullscreen 1
+screen_width 512
+screen_height 288
+stretch_to_fit 0
+fullscreen 0
 show_splash 1

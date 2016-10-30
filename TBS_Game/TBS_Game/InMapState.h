@@ -43,6 +43,8 @@ private:
 	void moveSelected(const unsigned int& x,const unsigned int& y);
 	void onSelectPress();
 	void populateMoveSpan(int movePoints, const int& x, const int& y);
+	bool allCharactersMoved();
+	void changeTurn();
 	
 	Game& m_game;
 
@@ -60,11 +62,14 @@ private:
 	//Assets
 	SpriteSheet m_cursor;
 	SpriteSheet m_moveSpanSprite;
+	sf::Sprite m_turnChangeSprite;
 	sf::Music m_music;
 
 	//Logic stuff
 	MapState m_mapState;
 	Turn m_turn;
+	bool m_turnChangeSpriteShowing;
+	sf::Clock* m_turnChangeSpriteClock;
 
 	//Overlay stuff
 	std::vector<CharacterSelectMenu*> m_menus;

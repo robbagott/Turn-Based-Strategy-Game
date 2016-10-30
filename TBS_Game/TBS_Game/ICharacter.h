@@ -16,6 +16,8 @@ public:
 	int health() const;
 	virtual void setHealth(const int& val) = 0;
 	bool isAlive();
+	bool isMoved();
+	void setMoved(bool isMoved);
 	int strength() const;
 	int armor() const;
 	int intelligence() const;
@@ -45,6 +47,8 @@ protected:
 	int m_energy = 0;
 	//How many tiles unit can cover per turn
 	int m_movePoints = 0;
+	//If character has been moved
+	bool m_isMoved = false;
 
 	//MOST LIKELY TEMPORARY**********************
 	bool m_friendly;

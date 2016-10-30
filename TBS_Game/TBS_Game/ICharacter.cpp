@@ -41,3 +41,11 @@ bool ICharacter::isAlive() {
 	}
 	return false;
 }
+
+bool ICharacter::isMoved() {
+	return m_isMoved;
+}
+
+void ICharacter::setMoved(bool isMoved) {
+	m_isMoved = isMoved;
+}
