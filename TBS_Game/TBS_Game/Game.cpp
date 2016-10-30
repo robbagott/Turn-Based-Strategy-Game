@@ -133,7 +133,8 @@ void Game::initializeWindow() {
 			m_mainWindow->setView(sf::View(sf::FloatRect(0.0, 0.0, (float)AppInfo::get()->resx(), (float)AppInfo::get()->resy())));
 		}
 		else {
-			int maxScaling = std::min(AppInfo::get()->windowWidth() / AppInfo::get()->resx(), AppInfo::get()->windowHeight() / AppInfo::get()->resy());
+			std::cout << (float)AppInfo::get()->windowWidth() / AppInfo::get()->resx() << std::endl;
+			float maxScaling = std::min((float) AppInfo::get()->windowWidth() / AppInfo::get()->resx(), (float) AppInfo::get()->windowHeight() / AppInfo::get()->resy());
 			int xOffset = (AppInfo::get()->windowWidth() - AppInfo::get()->resx()*maxScaling) / (2 * maxScaling);
 			int yOffset = (AppInfo::get()->windowHeight() - AppInfo::get()->resy()*maxScaling) / (2 * maxScaling);
 			m_mainWindow->setView(sf::View(sf::FloatRect((float)-xOffset, (float)-yOffset, (float)AppInfo::get()->resx() + 2 * xOffset, (float)AppInfo::get()->resy() + 2 * yOffset)));
